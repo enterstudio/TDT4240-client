@@ -5,9 +5,28 @@
     tools:context="com.gruppe16.tdt4240_client.fragments.MenuFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:text="Create new game"
+            android:id="@+id/createGameButton" />
+
+        <Button
+            android:layout_width="200dp"
+            android:layout_gravity="center"
+            android:text="Join new game"
+            android:layout_height="80dp"
+            android:id="@+id/joinGameButton" />
+    </LinearLayout>
+
+
+
 
 </FrameLayout>
