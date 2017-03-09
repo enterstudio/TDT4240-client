@@ -1,5 +1,6 @@
 package com.gruppe16.tdt4240_client;
 
+import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,14 +13,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initializeStartFragment();
     }
 
     public void initializeStartFragment(){
-        MenuFragment fragment = MenuFragment.newInstance("hey", "yo");
+        MenuFragment fragment = MenuFragment.newInstance();
         FragmentManager fm = getSupportFragmentManager();
         fm
                 .beginTransaction()
                 .add(R.id.container, fragment)
                 .commit();
     }
+
 }
