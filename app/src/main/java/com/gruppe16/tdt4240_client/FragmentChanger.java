@@ -15,7 +15,7 @@ import com.gruppe16.tdt4240_client.fragments.MenuFragment;
 
 public class FragmentChanger {
 
-    public static void goToCreateGameView(FragmentActivity activity){
+    public static void goToCreateGameView(FragmentActivity activity) {
         CreateGameFragment fragment = CreateGameFragment.newInstance();
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
@@ -24,7 +24,11 @@ public class FragmentChanger {
                 .commit();
     }
 
-    public static void goToJoinGameView(FragmentActivity activity){
+
+    public static void goToSlideshowView() {
+    }
+
+    public static void goToJoinGameView (FragmentActivity activity){
         JoinGameFragment fragment = JoinGameFragment.newInstance();
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
@@ -33,3 +37,4 @@ public class FragmentChanger {
                 .commit();
     }
 }
+
