@@ -12,19 +12,10 @@ import android.widget.Button;
 import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MenuFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MenuFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MenuFragment extends Fragment {
 
     private Button createGameButton;
     private Button joinGameButton;
-
 
     public MenuFragment() {
         // Required empty public constructor
@@ -53,14 +44,14 @@ public class MenuFragment extends Fragment {
         createGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentChanger.goToCreateGameView();
+                FragmentChanger.goToCreateGameView(getActivity());
             }
         });
 
         joinGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentChanger.goToJoinGameView();
+                FragmentChanger.goToJoinGameView(getActivity());
             }
         });
 

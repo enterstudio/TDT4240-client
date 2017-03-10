@@ -5,9 +5,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
 import com.gruppe16.tdt4240_client.fragments.MenuFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JoinGameFragment.JoinGameByPinListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,4 +26,8 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    @Override
+    public void onJoinGame(String gamePin) {
+        NetworkAbstraction.joinGame(gamePin);
+    }
 }
