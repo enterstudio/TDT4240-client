@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.gruppe16.tdt4240_client.fragments.CreateGameFragment;
+import com.gruppe16.tdt4240_client.fragments.DrawFragment;
 import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
 import com.gruppe16.tdt4240_client.fragments.MenuFragment;
 
@@ -38,7 +39,12 @@ public class FragmentChanger {
     }
 
     public static void goToDrawView(FragmentActivity activity){
-
+        DrawFragment fragment = DrawFragment.newInstance();
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fm
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
     }
 }
 
