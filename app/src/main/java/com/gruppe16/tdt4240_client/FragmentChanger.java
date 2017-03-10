@@ -22,5 +22,10 @@ public class FragmentChanger {
 
     public static void goToJoinGameView(){
 
+
+    }
+
+    public static void goToSlideshowView(){
+
     }
 }
