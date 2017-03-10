@@ -36,5 +36,9 @@ public class FragmentChanger {
                 .replace(R.id.container, fragment)
                 .commit();
     }
+
+    public static void goToDrawView(FragmentActivity activity){
+
+    }
 }
 
