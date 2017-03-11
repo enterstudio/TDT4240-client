@@ -13,7 +13,6 @@ import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,7 +42,7 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
 
     public void setPin(String gamePin){
         this.gamePin = gamePin;
-        setPollingForNewPlayers();
+        setPollingForGame();
         gamePinTextView.setText("PIN: " + gamePin);
     }
 
@@ -79,13 +78,13 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
         return rootView;
     }
 
-    private void setPollingForNewPlayers(){
+    private void setPollingForGame(){
         playerPollTimer = new Timer();
         final Response.Listener listener = this;
         playerPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForPlayes(gamePin, listener);
+                NetworkAbstraction.getInstance(getContext()).pollForGame(gamePin, listener);
             }
         }, 0, 1000);
     }

@@ -2,6 +2,7 @@ package com.gruppe16.tdt4240_client;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
@@ -46,8 +47,11 @@ public class FragmentChanger {
                 .commit();
     }
 
-    public static void goToWaitingView(FragmentActivity activity) {
+    public static void goToWaitingView(FragmentActivity activity, String gamePin) {
         WaitingFragment fragment = WaitingFragment.newInstance();
+        Bundle args = new Bundle();
+        args.putString("gamePin", gamePin);
+        fragment.setArguments(args);
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()
