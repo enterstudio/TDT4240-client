@@ -22,23 +22,25 @@ import org.json.JSONObject;
 
 public class NetworkAbstraction {
 
+    private final static int POST = Request.Method.POST;
+    private final static int GET = Request.Method.GET;
     private static NetworkAbstraction networkAbstraction;
 
-    String url = "http://localhost:8000";
-    String gameUrl = url + "/game";
-    String userUrl = url + "/user";
+    private String url = "http://localhost:8000";
+    private String gameUrl = url + "/game/";
+    private String userUrl = url + "/user";
+    private RequestQueue requestQueue;
+    private NetworkErrorHandler errorListener = new NetworkErrorHandler();
 
-    RequestQueue requestQueue;
-    Network network;
-    Cache cache;
 
-    public NetworkAbstraction(Context context){
+    private NetworkAbstraction(Context context){
         requestQueue = Volley.newRequestQueue(context);
-        cache = new DiskBasedCache(context.getCacheDir(), 1024*1024);
-        network = new BasicNetwork(new HurlStack());
+        Cache cache = new DiskBasedCache(context.getCacheDir(), 1024*1024);
+        Network network = new BasicNetwork(new HurlStack());
         requestQueue = new RequestQueue(cache, network);
         requestQueue.start();
     }
+
 
     public synchronized static NetworkAbstraction getInstance(Context context){
         if(networkAbstraction == null){
@@ -48,44 +50,39 @@ public class NetworkAbstraction {
         return networkAbstraction;
     }
 
-    public void joinGame(String gamePin){
-        JSONObject payload = new JSONObject();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>(){
-
-            @Override
-            public void onResponse(JSONObject response) {
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
+    public void joinGame(String gamePin, Response.Listener<JSONObject> listener){
+        String joinGameUrl = gameUrl + "/" + gamePin;
+        Request<JSONObject> request = new JsonObjectRequest(POST, joinGameUrl, null, listener, errorListener);
+        requestQueue.add(request);
     }
 
-    public void createGame(Response.ResponseListener<JSONObject> listener){
 
+    public void createGame(Response.Listener<JSONObject> listener){
+        Request<JSONObject> request = new JsonObjectRequest(POST, gameUrl, null, listener, errorListener);
+        requestQueue.add(request);
     }
+
+
+    public void submitGuess(int gamepin, Response.Listener<JSONObject> listener){
+        String guessUrl = gameUrl + "/" + gamepin + "/guess";
+        Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, null, listener, errorListener);
+        requestQueue.add(request);
+    }
+
 
     public void submitDrawing(){
-
+        //TODO: implement
     }
 
-    public void submitGuess(){
-
-    }
 
     public void getDrawing(){
-        // set fragment as listener for receiving drawing
+        //TODO: implement
     }
+
 
     public void getGuess(){
-
+        //TODO: implement
     }
-
-
 
 }
