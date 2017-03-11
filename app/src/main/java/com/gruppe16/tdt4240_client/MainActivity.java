@@ -5,10 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.gruppe16.tdt4240_client.fragments.DrawFragment;
 import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
 import com.gruppe16.tdt4240_client.fragments.MenuFragment;
 
-public class MainActivity extends AppCompatActivity implements JoinGameFragment.JoinGameByPinListener {
+public class MainActivity extends AppCompatActivity implements JoinGameFragment.JoinGameByPinListener, DrawFragment.OnSubmitDrawingListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements JoinGameFragment.
 
     public void initializeStartFragment(){
         MenuFragment fragment = MenuFragment.newInstance();
+        //DrawFragment fragment = DrawFragment.newInstance();
         FragmentManager fm = getSupportFragmentManager();
         fm
                 .beginTransaction()
@@ -29,5 +31,10 @@ public class MainActivity extends AppCompatActivity implements JoinGameFragment.
     @Override
     public void onJoinGame(String gamePin) {
         NetworkAbstraction.joinGame(gamePin);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
