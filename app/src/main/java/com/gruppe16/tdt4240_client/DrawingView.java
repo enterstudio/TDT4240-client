@@ -25,7 +25,7 @@ public class DrawingView extends View {
     Context context;
     private Paint circlePaint;
     private Path circlePath;
-    private Paint mPaint;
+    public Paint mPaint;
 
     public DrawingView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -65,9 +65,13 @@ public class DrawingView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawBitmap( mBitmap, 0, 0, mBitmapPaint);
-        canvas.drawPath( mPath, mPaint);
-        canvas.drawPath( circlePath,  circlePaint);
+        canvas.drawBitmap( mBitmap, 0, 0, mBitmapPaint );
+        canvas.drawPath( mPath, mPaint );
+        canvas.drawPath( circlePath,  circlePaint );
+    }
+
+    public Bitmap getFinishedDrawing(){
+        return mBitmap;
     }
 
     private float mX, mY;

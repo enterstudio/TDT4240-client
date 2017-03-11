@@ -15,17 +15,10 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/timeLeftTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10sp"
-                android:text="Time left:" />
-
-            <TextView
-                android:id="@+id/timeLeft"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10sp"
-                android:text="30 sec" />
+                android:padding="10sp" />
 
         </LinearLayout>
 
@@ -42,7 +35,8 @@
         <com.gruppe16.tdt4240_client.DrawingView
             android:id="@+id/drawingView"
             android:layout_width="match_parent"
-            android:layout_height="150pt"/>
+            android:layout_height="150pt"
+            android:background="#FFFFFF"/>
 
 
         <LinearLayout
@@ -53,14 +47,19 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Draw" />
+                android:text="Draw"
+                android:id="@+id/drawButton"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Erase" />
+                android:text="Erase"
+                android:id="@+id/eraseButton" />
+
+
 
         </LinearLayout>
+
 
     </LinearLayout>
 
