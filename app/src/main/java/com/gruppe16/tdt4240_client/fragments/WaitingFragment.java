@@ -10,14 +10,7 @@ import android.view.ViewGroup;
 
 import com.gruppe16.tdt4240_client.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link WaitingFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link WaitingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class WaitingFragment extends Fragment {
 
 
@@ -29,6 +22,11 @@ public class WaitingFragment extends Fragment {
 
     public WaitingFragment() {
         // Required empty public constructor
+    }
+
+    public static WaitingFragment newInstance() {
+        WaitingFragment fragment = new WaitingFragment();
+        return fragment;
     }
 
     @Override

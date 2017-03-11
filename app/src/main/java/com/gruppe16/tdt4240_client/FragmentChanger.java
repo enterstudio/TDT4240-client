@@ -9,6 +9,8 @@ import com.gruppe16.tdt4240_client.fragments.CreateGameFragment;
 import com.gruppe16.tdt4240_client.fragments.DrawFragment;
 import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
 import com.gruppe16.tdt4240_client.fragments.MenuFragment;
+import com.gruppe16.tdt4240_client.fragments.SlideShowFragment;
+import com.gruppe16.tdt4240_client.fragments.WaitingFragment;
 
 /**
  * Created by Camilla on 09.03.2017.
@@ -26,11 +28,26 @@ public class FragmentChanger {
     }
 
 
-    public static void goToSlideshowView() {
+    public static void goToSlideshowView(FragmentActivity activity) {
+        SlideShowFragment fragment = SlideShowFragment.newInstance();
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fm
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
     }
 
     public static void goToJoinGameView (FragmentActivity activity){
         JoinGameFragment fragment = JoinGameFragment.newInstance();
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fm
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+    }
+
+    public static void goToWaitingView(FragmentActivity activity) {
+        WaitingFragment fragment = WaitingFragment.newInstance();
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()

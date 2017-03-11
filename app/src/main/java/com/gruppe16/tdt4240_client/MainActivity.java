@@ -30,11 +30,11 @@ public class MainActivity extends AppCompatActivity implements JoinGameFragment.
 
     @Override
     public void onJoinGame(String gamePin) {
-        NetworkAbstraction.joinGame(gamePin);
+        FragmentChanger.goToJoinGameView(this);
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
+        FragmentChanger.goToCreateGameView(this);
     }
 }

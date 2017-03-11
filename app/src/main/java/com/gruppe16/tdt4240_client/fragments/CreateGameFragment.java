@@ -1,7 +1,5 @@
 package com.gruppe16.tdt4240_client.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,22 +8,30 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.Response;
 import com.gruppe16.tdt4240_client.FragmentChanger;
+import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
 
-public class CreateGameFragment extends Fragment {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    private Button startGameButton;
-    private TextView gamePinTextView;
+import java.util.Timer;
+import java.util.TimerTask;
+
+
+public class CreateGameFragment extends Fragment implements Response.Listener<JSONObject> {
+
     private TextView playersCountTextView;
-    private int gamePin;
+    private TextView gamePinTextView;
+    private Button startGameButton;
+    private Timer playerPollTimer;
     private int playersCount;
-
+    private String gamePin;
 
     public CreateGameFragment() {
         // Required empty public constructor
-        setPin();
-        setPlayers();
     }
 
     public static CreateGameFragment newInstance() {
@@ -35,14 +41,15 @@ public class CreateGameFragment extends Fragment {
         return fragment;
     }
 
-    public int getPin(){ return gamePin; }
+    public void setPin(String gamePin){
+        this.gamePin = gamePin;
+        setPollingForNewPlayers();
+        gamePinTextView.setText("PIN: " + gamePin);
+    }
 
-    public void setPin(){ gamePin = 12345; }
-
-    public int getPlayers(){ return playersCount; }
-
-    public void setPlayers(){ playersCount = 3; }
-
+    public void setPlayers(int playerCount){
+        playersCountTextView.setText(playerCount + "");
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,15 +65,54 @@ public class CreateGameFragment extends Fragment {
         playersCountTextView = (TextView) rootView.findViewById(R.id.playersCountTextView);
         startGameButton = (Button) rootView.findViewById(R.id.startGameButton);
 
-        gamePinTextView.setText("PIN: " + getPin());
-        playersCountTextView.setText("Player: " + getPlayers());
-
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {FragmentChanger.goToDrawView(getActivity());
+            public void onClick(View v) {
+                playerPollTimer.cancel();
+                FragmentChanger.goToDrawView(getActivity());
             }
         });
 
+        /* Request new gamepin from server */
+        NetworkAbstraction.getInstance(getContext()).createGame(this);
+
         return rootView;
     }
+
+    private void setPollingForNewPlayers(){
+        playerPollTimer = new Timer();
+        final Response.Listener listener = this;
+        playerPollTimer.scheduleAtFixedRate( new TimerTask() {
+            @Override
+            public void run() {
+                NetworkAbstraction.getInstance(getContext()).pollForPlayes(gamePin, listener);
+            }
+        }, 0, 1000);
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        try{
+            if(gamePin == null){
+                System.out.println(response);
+                gamePin = response.getString("gamePin");
+                this.setPin(gamePin);
+            }
+            else{
+                getPlayers(response);
+            }
+        }
+        catch (JSONException e){
+            System.out.println(e);
+        }
+    }
+
+    private void getPlayers(JSONObject response) throws JSONException{
+        System.out.println(response);
+        //JSONArray players = response.getJSONArray("players");
+        //this.setPlayers(players.length());
+    }
+
+
+
 }
