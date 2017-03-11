@@ -20,6 +20,11 @@ public class SlideShowFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static SlideShowFragment newInstance() {
+        SlideShowFragment fragment = new SlideShowFragment();
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
