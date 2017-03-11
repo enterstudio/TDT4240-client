@@ -12,15 +12,17 @@
         android:orientation="horizontal">
 
         <Button
-            android:layout_width="200dp"
+            android:layout_width="0dp"
             android:layout_height="80dp"
+            android:layout_weight="1"
             android:layout_gravity="bottom"
             android:text="Declined"
             android:id="@+id/declinedButton"/>
 
         <Button
-            android:layout_width="200dp"
+            android:layout_width="0dp"
             android:layout_height="80dp"
+            android:layout_weight="1"
             android:layout_gravity="bottom"
             android:text="OK"
             android:id="@+id/okButton"

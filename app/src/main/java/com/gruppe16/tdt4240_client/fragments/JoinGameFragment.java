@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.R;
 
 public class JoinGameFragment extends Fragment {
@@ -54,6 +55,7 @@ public class JoinGameFragment extends Fragment {
         if (mListener != null) {
             mListener.onJoinGame(gamePinInput.getText().toString());
         }
+        FragmentChanger.goToWaitingView(getActivity());
     }
 
     @Override
