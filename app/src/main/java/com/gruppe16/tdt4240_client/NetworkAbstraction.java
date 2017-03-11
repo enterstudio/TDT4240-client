@@ -64,9 +64,16 @@ public class NetworkAbstraction {
     }
 
 
-    public void submitGuess(int gamepin, Response.Listener<JSONObject> listener){
+    public void submitGuess(String gamepin, Response.Listener<JSONObject> listener){
         String guessUrl = gameUrl + "/" + gamepin + "/guess";
         Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, null, listener, errorListener);
+        requestQueue.add(request);
+    }
+
+
+    public void pollForPlayes(String gamePin, Response.Listener<JSONObject> listener){
+        String url = gameUrl + "/" + gamePin;
+        Request<JSONObject> request = new JsonObjectRequest(GET, url, null, listener, errorListener);
         requestQueue.add(request);
     }
 
@@ -84,5 +91,4 @@ public class NetworkAbstraction {
     public void getGuess(){
         //TODO: implement
     }
-
 }
