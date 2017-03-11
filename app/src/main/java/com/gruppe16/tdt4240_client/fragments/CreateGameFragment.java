@@ -1,7 +1,5 @@
 package com.gruppe16.tdt4240_client.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -82,9 +80,9 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
     }
 
     private void setPollingForNewPlayers(){
-        Timer timer = new Timer();
+        playerPollTimer = new Timer();
         final Response.Listener listener = this;
-        timer.scheduleAtFixedRate( new TimerTask() {
+        playerPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
                 NetworkAbstraction.getInstance(getContext()).pollForPlayes(gamePin, listener);
@@ -94,9 +92,9 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
 
     @Override
     public void onResponse(JSONObject response) {
-        String gamePin = "NO PIN";
         try{
             if(gamePin == null){
+                System.out.println(response);
                 gamePin = response.getString("gamePin");
                 this.setPin(gamePin);
             }
@@ -111,8 +109,8 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
 
     private void getPlayers(JSONObject response) throws JSONException{
         System.out.println(response);
-        JSONArray players = response.getJSONArray("players");
-        this.setPlayers(players.length());
+        //JSONArray players = response.getJSONArray("players");
+        //this.setPlayers(players.length());
     }
 
 

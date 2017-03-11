@@ -26,8 +26,8 @@ public class NetworkAbstraction {
     private final static int GET = Request.Method.GET;
     private static NetworkAbstraction networkAbstraction;
 
-    private String url = "http://localhost:8000";
-    private String gameUrl = url + "/game/";
+    private String url = "http://10.0.2.2:8000";
+    private String gameUrl = url + "/game";
     private String userUrl = url + "/user";
     private RequestQueue requestQueue;
     private NetworkErrorHandler errorListener = new NetworkErrorHandler();
