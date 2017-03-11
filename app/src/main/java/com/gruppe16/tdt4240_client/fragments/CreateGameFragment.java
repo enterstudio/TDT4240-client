@@ -18,7 +18,7 @@ import com.gruppe16.tdt4240_client.R;
  * Use the {@link CreateGameFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateGameFragment extends Fragment {
+public class CreateGameFragment extends Fragment{
 
     private OnFragmentInteractionListener mListener;
 
