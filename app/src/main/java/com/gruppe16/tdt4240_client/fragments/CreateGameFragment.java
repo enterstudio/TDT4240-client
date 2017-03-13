@@ -1,5 +1,6 @@
 package com.gruppe16.tdt4240_client.fragments;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
@@ -19,6 +21,8 @@ import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class CreateGameFragment extends Fragment implements Response.Listener<JSONObject> {
@@ -112,7 +116,4 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
         //JSONArray players = response.getJSONArray("players");
         //this.setPlayers(players.length());
     }
-
-
-
 }

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,11 @@ import android.widget.TextView;
 
 import com.gruppe16.tdt4240_client.DrawingView;
 import com.gruppe16.tdt4240_client.FragmentChanger;
+import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import cz.msebera.android.httpclient.Header;
 
 public class DrawFragment extends Fragment {
 
@@ -84,8 +89,16 @@ public class DrawFragment extends Fragment {
                 timeLeftTextView.setText("Seconds left: 0");
                 finishedDrawing = drawingView.getFinishedDrawing();
                 //someImageView.setImageBitmap(finishedDrawing);
-                // TODO: kall en eller annen funksjon som sender bilde object og bytter skjermbilde
+                String gamepin = "2"; //TODO: Get gameping from real location.
 
+                NetworkAbstraction.getInstance(getContext()).submitDrawing(gamepin, finishedDrawing, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        super.onSuccess(statusCode, headers, responseString);
+
+                        Log.i("PROGARK_APP", String.format("onSuccess: %s!", responseString));
+                    }
+                });
             }
         }.start();
 

@@ -1,6 +1,7 @@
 package com.gruppe16.tdt4240_client;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -13,8 +14,11 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.loopj.android.http.*;
 
 import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Created by Sigurd on 09.03.2017.
@@ -78,8 +82,19 @@ public class NetworkAbstraction {
     }
 
 
-    public void submitDrawing(){
-        //TODO: implement
+    public void submitDrawing(String gamepin, Bitmap drawing, AsyncHttpResponseHandler responseHandler){
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        drawing.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
+        byte [] byte_arr = stream.toByteArray();
+        String image_str = Base64.encodeToString(byte_arr, Base64.DEFAULT);
+
+        RequestParams params = new RequestParams();
+        params.put("drawing", image_str);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.post(gameUrl + "/drawing", params, responseHandler);
     }
 
 
