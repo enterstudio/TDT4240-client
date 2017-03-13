@@ -56,7 +56,11 @@
                 android:text="Erase"
                 android:id="@+id/eraseButton" />
 
-
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[DBG] Submit"
+                android:id="@+id/submitButton" />
 
         </LinearLayout>
 

@@ -20,6 +20,10 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
+
 /**
  * Created by Sigurd on 09.03.2017.
  */
@@ -33,6 +37,7 @@ public class NetworkAbstraction {
     private String url = "http://10.0.2.2:8000";
     private String gameUrl = url + "/game";
     private String userUrl = url + "/user";
+    private String drawingUrl = url + "/drawing";
     private RequestQueue requestQueue;
     private NetworkErrorHandler errorListener = new NetworkErrorHandler();
 
@@ -82,19 +87,28 @@ public class NetworkAbstraction {
     }
 
 
-    public void submitDrawing(String gamepin, Bitmap drawing, AsyncHttpResponseHandler responseHandler){
+    public void submitDrawing(Context context, String gamepin, Bitmap drawing, AsyncHttpResponseHandler responseHandler){
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         drawing.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
         byte [] byte_arr = stream.toByteArray();
         String image_str = Base64.encodeToString(byte_arr, Base64.DEFAULT);
 
-        RequestParams params = new RequestParams();
-        params.put("drawing", image_str);
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("image", image_str);
 
-        AsyncHttpClient client = new AsyncHttpClient();
 
-        client.post(gameUrl + "/drawing", params, responseHandler);
+            StringEntity entity = new StringEntity(jsonParams.toString());
+            entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+
+            AsyncHttpClient client = new AsyncHttpClient();
+
+            client.post(context, drawingUrl, entity, "application/json", responseHandler);
+        }
+        catch (Exception e) {
+
+        }
     }
 
 
