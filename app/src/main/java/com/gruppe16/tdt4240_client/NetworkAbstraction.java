@@ -2,6 +2,7 @@ package com.gruppe16.tdt4240_client;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Base64;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -14,15 +15,10 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.loopj.android.http.*;
 
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-
-import cz.msebera.android.httpclient.entity.StringEntity;
-import cz.msebera.android.httpclient.message.BasicHeader;
-import cz.msebera.android.httpclient.protocol.HTTP;
 
 /**
  * Created by Sigurd on 09.03.2017.
@@ -87,7 +83,7 @@ public class NetworkAbstraction {
     }
 
 
-    public void submitDrawing(Context context, String gamepin, Bitmap drawing, AsyncHttpResponseHandler responseHandler){
+    public void submitDrawing(Context context, String gamepin, Bitmap drawing, Response.Listener<JSONObject> responseHandler){
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         drawing.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
@@ -98,13 +94,9 @@ public class NetworkAbstraction {
         try {
             jsonParams.put("image", image_str);
 
-
-            StringEntity entity = new StringEntity(jsonParams.toString());
-            entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-
-            AsyncHttpClient client = new AsyncHttpClient();
-
-            client.post(context, drawingUrl, entity, "application/json", responseHandler);
+            Request<JSONObject> request = new JsonObjectRequest(POST, drawingUrl, jsonParams, responseHandler, errorListener);
+            requestQueue.add(request);
+            
         }
         catch (Exception e) {
 

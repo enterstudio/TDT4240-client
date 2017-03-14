@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Response;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
@@ -21,8 +20,6 @@ import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import cz.msebera.android.httpclient.Header;
 
 
 public class CreateGameFragment extends Fragment implements Response.Listener<JSONObject> {

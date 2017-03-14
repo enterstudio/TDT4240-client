@@ -18,13 +18,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
 import com.gruppe16.tdt4240_client.DrawingView;
 import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
-import cz.msebera.android.httpclient.Header;
+import org.json.JSONObject;
 
 public class DrawFragment extends Fragment {
 
@@ -61,7 +61,7 @@ public class DrawFragment extends Fragment {
         timeLeftTextView = (TextView) rootView.findViewById(R.id.timeLeftTextView);
         drawButton = (Button) rootView.findViewById(R.id.drawButton);
         eraseButton = (Button) rootView.findViewById(R.id.eraseButton);
-        Button submitButton = (Button) rootView.findViewById(R.id.submitButton);
+        //Button submitButton = (Button) rootView.findViewById(R.id.submitButton);
 
         //Erase and draw buttons functionality
         drawButton.setOnClickListener(new View.OnClickListener() {
@@ -80,23 +80,6 @@ public class DrawFragment extends Fragment {
             }
         });
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finishedDrawing = drawingView.getFinishedDrawing();
-                //someImageView.setImageBitmap(finishedDrawing);
-                String gamepin = "2"; //TODO: Get gameping from real location.
-
-                NetworkAbstraction.getInstance(getContext()).submitDrawing(getContext(), gamepin, finishedDrawing, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        super.onSuccess(statusCode, headers, responseString);
-
-                        Log.i("PROGARK_APP", String.format("onSuccess: %s!", responseString));
-                    }
-                });
-            }
-        });
 
         //The countdown timer
         new CountDownTimer(30000, 1000) {
@@ -109,12 +92,11 @@ public class DrawFragment extends Fragment {
                 //someImageView.setImageBitmap(finishedDrawing);
                 String gamepin = "2"; //TODO: Get gameping from real location.
 
-                NetworkAbstraction.getInstance(getContext()).submitDrawing(getContext(), gamepin, finishedDrawing, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        super.onSuccess(statusCode, headers, responseString);
+                NetworkAbstraction.getInstance(getContext()).submitDrawing(getContext(), gamepin, finishedDrawing,new Response.Listener<JSONObject>(){
 
-                        Log.e("OOPS", String.format("onSuccess: %s!", responseString));
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("Svar:"+response);
                     }
                 });
             }
