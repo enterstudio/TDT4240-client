@@ -71,7 +71,7 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
             public void onClick(View v) {
                 playerPollTimer.cancel();
                 // TODO: Handle errors better
-                if (!(gamePin.length() > 0) || !(playerID.length() > 0))
+                if ((!gamePin.isEmpty() && gamePin != null) && (playerID != null && !playerID.isEmpty()))
                     FragmentChanger.goToDrawView(getActivity(), gamePin, playerID);
                 else System.out.println("GamePin " + gamePin + " or playerID " + playerID + " not valid" );
             }
