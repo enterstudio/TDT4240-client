@@ -55,7 +55,7 @@ public class JoinGameFragment extends Fragment {
         if (mListener != null) {
             mListener.onJoinGame(gamePinInput.getText().toString());
         }
-        FragmentChanger.goToWaitingView(getActivity());
+        FragmentChanger.goToWaitingView(getActivity(), gamePinInput.getText().toString());
     }
 
     @Override

@@ -51,7 +51,6 @@ public class NetworkAbstraction {
         if(networkAbstraction == null){
             networkAbstraction = new NetworkAbstraction(context);
         }
-
         return networkAbstraction;
     }
 
@@ -76,7 +75,7 @@ public class NetworkAbstraction {
     }
 
 
-    public void pollForPlayes(String gamePin, Response.Listener<JSONObject> listener){
+    public void pollForGame(String gamePin, Response.Listener<JSONObject> listener){
         String url = gameUrl + "/" + gamePin;
         Request<JSONObject> request = new JsonObjectRequest(GET, url, null, listener, errorListener);
         requestQueue.add(request);
@@ -101,6 +100,7 @@ public class NetworkAbstraction {
         catch (Exception e) {
 
         }
+      
     }
 
 
