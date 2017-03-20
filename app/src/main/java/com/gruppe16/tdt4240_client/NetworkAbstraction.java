@@ -1,6 +1,8 @@
 package com.gruppe16.tdt4240_client;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Base64;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -16,6 +18,8 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * Created by Sigurd on 09.03.2017.
  */
@@ -29,6 +33,7 @@ public class NetworkAbstraction {
     private String url = "http://10.0.2.2:8000";
     private String gameUrl = url + "/game";
     private String userUrl = url + "/user";
+    private String drawingUrl = url + "/drawing";
     private RequestQueue requestQueue;
     private NetworkErrorHandler errorListener = new NetworkErrorHandler();
 
@@ -76,8 +81,26 @@ public class NetworkAbstraction {
         requestQueue.add(request);
     }
 
-    public void submitDrawing(){
-        //TODO: implement
+
+    public void submitDrawing(Context context, String gamepin, Bitmap drawing, Response.Listener<JSONObject> responseHandler){
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        drawing.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
+        byte [] byte_arr = stream.toByteArray();
+        String image_str = Base64.encodeToString(byte_arr, Base64.DEFAULT);
+
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("image", image_str);
+
+            Request<JSONObject> request = new JsonObjectRequest(POST, drawingUrl, jsonParams, responseHandler, errorListener);
+            requestQueue.add(request);
+            
+        }
+        catch (Exception e) {
+
+        }
+      
     }
 
 

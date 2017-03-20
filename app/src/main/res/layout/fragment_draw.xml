@@ -56,8 +56,6 @@
                 android:text="Erase"
                 android:id="@+id/eraseButton" />
 
-
-
         </LinearLayout>
 
 

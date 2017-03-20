@@ -1,5 +1,6 @@
 package com.gruppe16.tdt4240_client.fragments;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.graphics.Color;
 
 import com.android.volley.Response;
 import com.gruppe16.tdt4240_client.FragmentChanger;
@@ -77,6 +79,8 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
             }
         });
 
+        startGameButton.setEnabled(false);
+
         /* Request new gamepin from server */
         NetworkAbstraction.getInstance(getContext()).createGame(this);
 
@@ -115,10 +119,23 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
 
     private void getPlayers(JSONObject response) throws JSONException{
         System.out.println(response);
-        //JSONArray players = response.getJSONArray("players");
-        //this.setPlayers(players.length());
+        JSONArray players = response.getJSONArray("players");
+        this.setPlayers(players.length());
+
+        if (players.length() == 4){
+            startGameButton.setEnabled(true);
+        }
+
+        else if (players.length() == 6) {
+            startGameButton.setEnabled(true);
+        }
+
+        else if (players.length() == 8) {
+            startGameButton.setEnabled(true);
+        }
+
+        else {
+            startGameButton.setEnabled(false);
+        }
     }
-
-
-
 }
