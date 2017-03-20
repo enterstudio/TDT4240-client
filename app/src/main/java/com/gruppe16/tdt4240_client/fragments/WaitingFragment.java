@@ -17,15 +17,13 @@ import java.util.TimerTask;
 public class WaitingFragment extends Fragment implements Response.Listener<JSONObject> {
 
     private String gamePin;
-    private Timer gameStartPollTimer;
 
     public WaitingFragment() {
         // Required empty public constructor
     }
 
     public static WaitingFragment newInstance() {
-        WaitingFragment fragment = new WaitingFragment();
-        return fragment;
+        return new WaitingFragment();
     }
 
     @Override
@@ -43,8 +41,8 @@ public class WaitingFragment extends Fragment implements Response.Listener<JSONO
     }
 
     private void setPollingForGameStart(){
-        gameStartPollTimer = new Timer();
-        final Response.Listener listener = this;
+        Timer gameStartPollTimer = new Timer();
+        final Response.Listener<JSONObject> listener = this;
         gameStartPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
@@ -59,12 +57,15 @@ public class WaitingFragment extends Fragment implements Response.Listener<JSONO
         System.out.println(response);
         try{
             boolean isStarted = (boolean) response.get("isStarted");
+            String gamePin = (String) response.get("gamePin");
+            String playerID = (String) response.get("playerID");
             if (isStarted){
-                FragmentChanger.goToDrawView(getActivity());
+                FragmentChanger.goToDrawView(getActivity(), gamePin, playerID);
             }
         }
         catch (Exception e){
             e.printStackTrace();
         }
     }
+
 }

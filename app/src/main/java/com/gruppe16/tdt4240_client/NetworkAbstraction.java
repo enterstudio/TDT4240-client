@@ -46,7 +46,6 @@ public class NetworkAbstraction {
         if(networkAbstraction == null){
             networkAbstraction = new NetworkAbstraction(context);
         }
-
         return networkAbstraction;
     }
 

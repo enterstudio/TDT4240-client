@@ -28,6 +28,8 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
     private Timer playerPollTimer;
     private int playersCount;
     private String gamePin;
+    private String playerID;
+    private JSONObject response;
 
     public CreateGameFragment() {
         // Required empty public constructor
@@ -68,7 +70,10 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
             @Override
             public void onClick(View v) {
                 playerPollTimer.cancel();
-                FragmentChanger.goToDrawView(getActivity());
+                // TODO: Handle errors better
+                if (!(gamePin.length() > 0) || !(playerID.length() > 0))
+                    FragmentChanger.goToDrawView(getActivity(), gamePin, playerID);
+                else System.out.println("GamePin " + gamePin + " or playerID " + playerID + " not valid" );
             }
         });
 
@@ -92,9 +97,11 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
     @Override
     public void onResponse(JSONObject response) {
         try{
+            this.response = response;
             if(gamePin == null){
                 System.out.println(response);
                 gamePin = response.getString("gamePin");
+                playerID = response.getString("playerID");
                 this.setPin(gamePin);
             }
             else{
