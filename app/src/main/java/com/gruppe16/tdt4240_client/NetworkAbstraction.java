@@ -1,5 +1,4 @@
 package com.gruppe16.tdt4240_client;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Base64;
@@ -9,7 +8,6 @@ import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
@@ -52,7 +50,6 @@ public class NetworkAbstraction {
         if(networkAbstraction == null){
             networkAbstraction = new NetworkAbstraction(context);
         }
-
         return networkAbstraction;
     }
 
@@ -69,7 +66,7 @@ public class NetworkAbstraction {
         requestQueue.add(request);
     }
 
-    public void pollForPlayes(String gamePin, Response.Listener<JSONObject> listener){
+    public void pollForGame(String gamePin, Response.Listener<JSONObject> listener){
         String url = gameUrl + "/" + gamePin;
         Request<JSONObject> request = new JsonObjectRequest(GET, url, null, listener, errorListener);
         requestQueue.add(request);
@@ -95,6 +92,7 @@ public class NetworkAbstraction {
         catch (Exception e) {
 
         }
+      
     }
 
 

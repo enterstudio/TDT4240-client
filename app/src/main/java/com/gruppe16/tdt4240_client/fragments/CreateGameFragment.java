@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.graphics.Color;
 
 import com.android.volley.Response;
 import com.gruppe16.tdt4240_client.FragmentChanger;
@@ -30,6 +31,8 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
     private Timer playerPollTimer;
     private int playersCount;
     private String gamePin;
+    private String playerID;
+    private JSONObject response;
 
     public CreateGameFragment() {
         // Required empty public constructor
@@ -44,7 +47,7 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
 
     public void setPin(String gamePin){
         this.gamePin = gamePin;
-        setPollingForNewPlayers();
+        setPollingForGame();
         gamePinTextView.setText("PIN: " + gamePin);
     }
 
@@ -70,9 +73,14 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
             @Override
             public void onClick(View v) {
                 playerPollTimer.cancel();
-                FragmentChanger.goToDrawView(getActivity());
+                // TODO: Handle errors better
+                if ((!gamePin.isEmpty() && gamePin != null) && (playerID != null && !playerID.isEmpty()))
+                    FragmentChanger.goToDrawView(getActivity(), gamePin, playerID);
+                else System.out.println("GamePin " + gamePin + " or playerID " + playerID + " not valid" );
             }
         });
+
+        startGameButton.setEnabled(false);
 
         /* Request new gamepin from server */
         NetworkAbstraction.getInstance(getContext()).createGame(this);
@@ -80,13 +88,13 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
         return rootView;
     }
 
-    private void setPollingForNewPlayers(){
+    private void setPollingForGame(){
         playerPollTimer = new Timer();
         final Response.Listener listener = this;
         playerPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForPlayes(gamePin, listener);
+                NetworkAbstraction.getInstance(getContext()).pollForGame(gamePin, listener);
             }
         }, 0, 1000);
     }
@@ -94,9 +102,11 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
     @Override
     public void onResponse(JSONObject response) {
         try{
+            this.response = response;
             if(gamePin == null){
                 System.out.println(response);
                 gamePin = response.getString("gamePin");
+                playerID = response.getString("playerID");
                 this.setPin(gamePin);
             }
             else{
@@ -110,7 +120,23 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
 
     private void getPlayers(JSONObject response) throws JSONException{
         System.out.println(response);
-        //JSONArray players = response.getJSONArray("players");
-        //this.setPlayers(players.length());
+        JSONArray players = response.getJSONArray("players");
+        this.setPlayers(players.length());
+
+        if (players.length() == 4){
+            startGameButton.setEnabled(true);
+        }
+
+        else if (players.length() == 6) {
+            startGameButton.setEnabled(true);
+        }
+
+        else if (players.length() == 8) {
+            startGameButton.setEnabled(true);
+        }
+
+        else {
+            startGameButton.setEnabled(false);
+        }
     }
 }
