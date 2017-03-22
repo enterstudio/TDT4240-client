@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.gruppe16.tdt4240_client.fragments.DrawFragment;
+import com.gruppe16.tdt4240_client.fragments.GuessFragment;
 import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
 import com.gruppe16.tdt4240_client.fragments.MenuFragment;
 
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements JoinGameFragment.
 
     public void initializeStartFragment(){
         //MenuFragment fragment = MenuFragment.newInstance();
-        DrawFragment fragment = DrawFragment.newInstance();
+        GuessFragment fragment = GuessFragment.newInstance();
         FragmentManager fm = getSupportFragmentManager();
         fm
                 .beginTransaction()

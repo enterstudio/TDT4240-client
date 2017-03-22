@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.gruppe16.tdt4240_client.fragments.CreateGameFragment;
 import com.gruppe16.tdt4240_client.fragments.DrawFragment;
+import com.gruppe16.tdt4240_client.fragments.GuessFragment;
 import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
 import com.gruppe16.tdt4240_client.fragments.MenuFragment;
 import com.gruppe16.tdt4240_client.fragments.SlideShowFragment;
@@ -57,6 +58,15 @@ public class FragmentChanger {
 
     public static void goToDrawView(FragmentActivity activity){
         DrawFragment fragment = DrawFragment.newInstance();
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fm
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+    }
+
+    public static void goToGuessView(FragmentActivity activity){
+        GuessFragment fragment = GuessFragment.newInstance();
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()

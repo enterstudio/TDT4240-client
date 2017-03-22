@@ -33,6 +33,7 @@ public class NetworkAbstraction {
     private String url = "http://10.0.2.2:8000";
     private String gameUrl = url + "/game";
     private String userUrl = url + "/user";
+    private String guessUrl = url + "/guess";
     private String drawingUrl = url + "/drawing";
     private RequestQueue requestQueue;
     private NetworkErrorHandler errorListener = new NetworkErrorHandler();
@@ -68,12 +69,12 @@ public class NetworkAbstraction {
         requestQueue.add(request);
     }
 
-
+/*
     public void submitGuess(String gamepin, Response.Listener<JSONObject> listener){
         String guessUrl = gameUrl + "/" + gamepin + "/guess";
         Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, null, listener, errorListener);
         requestQueue.add(request);
-    }
+    }*/
 
 
     public void pollForPlayes(String gamePin, Response.Listener<JSONObject> listener){
@@ -93,10 +94,28 @@ public class NetworkAbstraction {
         JSONObject jsonParams = new JSONObject();
         try {
             jsonParams.put("image", image_str);
+            jsonParams.put("gamepin", gamepin);
 
             Request<JSONObject> request = new JsonObjectRequest(POST, drawingUrl, jsonParams, responseHandler, errorListener);
             requestQueue.add(request);
             
+        }
+        catch (Exception e) {
+
+        }
+    }
+
+
+    public void submitGuess(Context context, String gamepin, String guess, Response.Listener<JSONObject> responseHandler){
+
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("guess", guess);
+            jsonParams.put("gamepin", gamepin);
+
+            Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, jsonParams, responseHandler, errorListener);
+            requestQueue.add(request);
+
         }
         catch (Exception e) {
 

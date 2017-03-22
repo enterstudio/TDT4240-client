@@ -26,6 +26,7 @@ public class DrawingView extends View {
     private Paint circlePaint;
     private Path circlePath;
     public Paint mPaint;
+    private boolean callOnDraw = true;
 
     public DrawingView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -66,12 +67,23 @@ public class DrawingView extends View {
         super.onDraw(canvas);
 
         canvas.drawBitmap( mBitmap, 0, 0, mBitmapPaint );
-        canvas.drawPath( mPath, mPaint );
-        canvas.drawPath( circlePath,  circlePaint );
+
+        if(callOnDraw){
+            canvas.drawPath( mPath, mPaint );
+            canvas.drawPath( circlePath,  circlePaint );
+        }
     }
 
     public Bitmap getFinishedDrawing(){
         return mBitmap;
+    }
+
+    public Canvas getCanvas(){
+        return mCanvas;
+    }
+
+    public void stopDraw(){
+        callOnDraw = false;
     }
 
     private float mX, mY;
@@ -98,12 +110,14 @@ public class DrawingView extends View {
     }
 
     private void touch_up() {
-        mPath.lineTo(mX, mY);
-        circlePath.reset();
-        // commit the path to our offscreen
-        mCanvas.drawPath(mPath,  mPaint);
-        // kill this so we don't double draw
-        mPath.reset();
+        if(callOnDraw) {
+            mPath.lineTo(mX, mY);
+            circlePath.reset();
+            // commit the path to our offscreen
+            mCanvas.drawPath(mPath, mPaint);
+            // kill this so we don't double draw
+            mPath.reset();
+        }
     }
 
     @Override
@@ -127,8 +141,6 @@ public class DrawingView extends View {
         }
         return true;
     }
-
-
 }
 
 
