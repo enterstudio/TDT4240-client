@@ -29,14 +29,33 @@
             android:padding="10sp"
             android:text="Banana"
             android:textAlignment="center"
-            android:textSize="32sp" />
+            android:textSize="32sp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/guessWord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp"
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:visibility="gone"
+            android:hint="Your guess"/>
 
 
         <com.gruppe16.tdt4240_client.DrawingView
             android:id="@+id/drawingView"
             android:layout_width="match_parent"
             android:layout_height="150pt"
-            android:background="#FFFFFF"/>
+            android:background="#FFFFFF"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/imageReceived"
+            android:layout_width="match_parent"
+            android:layout_height="150pt"
+            android:src="@drawable/waiting"
+            android:visibility="gone"/>
 
 
         <LinearLayout
@@ -48,13 +67,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Draw"
-                android:id="@+id/drawButton"/>
+                android:id="@+id/drawButton"
+                android:visibility="gone"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Erase"
-                android:id="@+id/eraseButton" />
+                android:id="@+id/eraseButton"
+                android:visibility="gone"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit guess"
+                android:id="@+id/submitButton"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

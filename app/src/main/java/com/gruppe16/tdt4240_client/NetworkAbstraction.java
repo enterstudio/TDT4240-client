@@ -1,5 +1,4 @@
 package com.gruppe16.tdt4240_client;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Base64;
@@ -9,7 +8,6 @@ import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
@@ -33,6 +31,7 @@ public class NetworkAbstraction {
     private String url = "http://10.0.2.2:8000";
     private String gameUrl = url + "/game";
     private String userUrl = url + "/user";
+    private String guessUrl = url + "/guess";
     private String drawingUrl = url + "/drawing";
     private RequestQueue requestQueue;
     private NetworkErrorHandler errorListener = new NetworkErrorHandler();
@@ -67,14 +66,6 @@ public class NetworkAbstraction {
         requestQueue.add(request);
     }
 
-
-    public void submitGuess(String gamepin, Response.Listener<JSONObject> listener){
-        String guessUrl = gameUrl + "/" + gamepin + "/guess";
-        Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, null, listener, errorListener);
-        requestQueue.add(request);
-    }
-
-
     public void pollForGame(String gamePin, Response.Listener<JSONObject> listener){
         String url = gameUrl + "/" + gamePin;
         Request<JSONObject> request = new JsonObjectRequest(GET, url, null, listener, errorListener);
@@ -82,7 +73,7 @@ public class NetworkAbstraction {
     }
 
 
-    public void submitDrawing(Context context, String gamepin, Bitmap drawing, Response.Listener<JSONObject> responseHandler){
+    public void submitDrawing(String gamepin, Bitmap drawing, Response.Listener<JSONObject> responseHandler){
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         drawing.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
@@ -92,6 +83,7 @@ public class NetworkAbstraction {
         JSONObject jsonParams = new JSONObject();
         try {
             jsonParams.put("image", image_str);
+            jsonParams.put("gamepin", gamepin);
 
             Request<JSONObject> request = new JsonObjectRequest(POST, drawingUrl, jsonParams, responseHandler, errorListener);
             requestQueue.add(request);
@@ -101,6 +93,23 @@ public class NetworkAbstraction {
 
         }
       
+    }
+
+
+    public void submitGuess(String gamepin, String guess, Response.Listener<JSONObject> responseHandler){
+
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("guess", guess);
+            jsonParams.put("gamepin", gamepin);
+
+            Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, jsonParams, responseHandler, errorListener);
+            requestQueue.add(request);
+
+        }
+        catch (Exception e) {
+
+        }
     }
 
 

@@ -1,8 +1,6 @@
 package com.gruppe16.tdt4240_client.fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -11,119 +9,95 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
-import com.gruppe16.tdt4240_client.DrawingView;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
 
 import org.json.JSONObject;
 
-public class DrawFragment extends Fragment {
+public class GuessFragment extends Fragment {
 
-    private DrawingView drawingView;
+    private TextView guess;
     private TextView timeLeftTextView;
-    private OnSubmitDrawingListener mListener;
-    private Button drawButton;
-    private Button eraseButton;
-    private Bitmap finishedDrawing;
+    private Button submitButton;
+    private GuessFragment.OnSubmitGuessListener mListener;
+    private ImageView imageView;
 
-
-
-    public DrawFragment() {
+    public GuessFragment() {
         // Required empty public constructor
     }
 
-    public static DrawFragment newInstance() {
-        DrawFragment fragment = new DrawFragment();
+    public static GuessFragment newInstance() {
+        GuessFragment fragment = new GuessFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_draw, container, false);
-        drawingView = (DrawingView) rootView.findViewById(R.id.drawingView);
         timeLeftTextView = (TextView) rootView.findViewById(R.id.timeLeftTextView);
-        drawButton = (Button) rootView.findViewById(R.id.drawButton);
-        eraseButton = (Button) rootView.findViewById(R.id.eraseButton);
+        guess = (TextView) rootView.findViewById(R.id.guessWord);
+        imageView = (ImageView) rootView.findViewById(R.id.imageReceived);
+        submitButton = (Button) rootView.findViewById(R.id.submitButton);
 
-        rootView.findViewById(R.id.drawWord).setVisibility(View.VISIBLE);
-        drawingView.setVisibility(View.VISIBLE);
-        drawButton.setVisibility(View.VISIBLE);
-        eraseButton.setVisibility(View.VISIBLE);
+        imageView.setVisibility(View.VISIBLE);
+        guess.setVisibility(View.VISIBLE);
+        submitButton.setVisibility(View.VISIBLE);
 
-        //Erase and draw buttons functionality
-        drawButton.setOnClickListener(new View.OnClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawingView.mPaint.setColor(Color.BLACK);
-                drawingView.mPaint.setStrokeWidth(12);
+                String guessedWord = guess.getText().toString();
+                String gamepin = "2"; //TODO get real gamepin
+                NetworkAbstraction.getInstance(getContext()).submitGuess(gamepin, guessedWord,new Response.Listener<JSONObject>(){
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("SvarGuess:"+response);
+                    }
+                });
             }
         });
-
-        eraseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawingView.mPaint.setColor(Color.WHITE);
-                drawingView.mPaint.setStrokeWidth(80);
-            }
-        });
-
 
         //The countdown timer
-        new CountDownTimer(30000, 1000) {
+        new CountDownTimer(60000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timeLeftTextView.setText("Seconds left: " + millisUntilFinished / 1000);
             }
             public void onFinish() {
                 timeLeftTextView.setText("Seconds left: 0");
-                drawingView.stopDraw();
-                finishedDrawing = drawingView.getFinishedDrawing();
-                //someImageView.setImageBitmap(finishedDrawing);
+                submitButton.setOnClickListener(null);
                 String gamepin = "3"; //TODO: Get gameping from real location.
 
-                NetworkAbstraction.getInstance(getContext()).submitDrawing(gamepin, finishedDrawing,new Response.Listener<JSONObject>(){
+                /*
+                NetworkAbstraction.getInstance(getContext()).submitDrawing(getContext(), gamepin, finishedDrawing,new Response.Listener<JSONObject>(){
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println("SvarDrawing:"+response);
+                        System.out.println("Svar:"+response);
                     }
-                });
+                });*/
             }
         }.start();
 
         return rootView;
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*
-        if (context instanceof OnSubmitDrawingListener) {
-            mListener = (OnSubmitDrawingListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
     }
 
     @Override
@@ -142,7 +116,7 @@ public class DrawFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnSubmitDrawingListener {
+    public interface OnSubmitGuessListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
