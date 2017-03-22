@@ -1,14 +1,10 @@
 package com.gruppe16.tdt4240_client.fragments;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
-import com.gruppe16.tdt4240_client.DrawingView;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
 
@@ -29,8 +24,6 @@ public class GuessFragment extends Fragment {
     private TextView timeLeftTextView;
     private Button submitButton;
     private GuessFragment.OnSubmitGuessListener mListener;
-    //private Canvas canvas;
-    //private DrawingView drawingView;
     private ImageView imageView;
 
     public GuessFragment() {
@@ -56,9 +49,7 @@ public class GuessFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_draw, container, false);
         timeLeftTextView = (TextView) rootView.findViewById(R.id.timeLeftTextView);
         guess = (TextView) rootView.findViewById(R.id.guessWord);
-        imageView = (ImageView) rootView.findViewById(R.id.waiting);
-        //drawingView = (DrawingView) rootView.findViewById(R.id.drawingView);
-        //canvas = (Canvas) drawingView.getCanvas();
+        imageView = (ImageView) rootView.findViewById(R.id.imageReceived);
         submitButton = (Button) rootView.findViewById(R.id.submitButton);
 
         imageView.setVisibility(View.VISIBLE);
@@ -70,7 +61,7 @@ public class GuessFragment extends Fragment {
             public void onClick(View v) {
                 String guessedWord = guess.getText().toString();
                 String gamepin = "2"; //TODO get real gamepin
-                NetworkAbstraction.getInstance(getContext()).submitGuess(getContext(), gamepin, guessedWord,new Response.Listener<JSONObject>(){
+                NetworkAbstraction.getInstance(getContext()).submitGuess(gamepin, guessedWord,new Response.Listener<JSONObject>(){
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -80,10 +71,6 @@ public class GuessFragment extends Fragment {
             }
         });
 
-        //Drawable d = ContextCompat.getDrawable(getActivity(), R.drawable.waiting);
-        //d.setBounds(0, 0, 0, 0);
-        //d.draw(canvas);
-
         //The countdown timer
         new CountDownTimer(60000, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -91,9 +78,7 @@ public class GuessFragment extends Fragment {
             }
             public void onFinish() {
                 timeLeftTextView.setText("Seconds left: 0");
-                //drawingView.stopDraw();
-                //finishedDrawing = drawingView.getFinishedDrawing();
-                //someImageView.setImageBitmap(finishedDrawing);
+                submitButton.setOnClickListener(null);
                 String gamepin = "3"; //TODO: Get gameping from real location.
 
                 /*
@@ -110,24 +95,9 @@ public class GuessFragment extends Fragment {
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    /*
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }*/
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
     }
 
     @Override

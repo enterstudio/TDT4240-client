@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements JoinGameFragment.
 
     public void initializeStartFragment(){
         //MenuFragment fragment = MenuFragment.newInstance();
-        GuessFragment fragment = GuessFragment.newInstance();
+        DrawFragment fragment = DrawFragment.newInstance();
         FragmentManager fm = getSupportFragmentManager();
         fm
                 .beginTransaction()
