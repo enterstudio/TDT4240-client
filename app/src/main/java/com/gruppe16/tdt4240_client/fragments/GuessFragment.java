@@ -5,14 +5,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
 
@@ -20,7 +25,8 @@ import org.json.JSONObject;
 
 public class GuessFragment extends Fragment {
 
-    private TextView guess;
+    private LinearLayout guessField;
+    private EditText guess;
     private TextView timeLeftTextView;
     private Button submitButton;
     private GuessFragment.OnSubmitGuessListener mListener;
@@ -48,13 +54,36 @@ public class GuessFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_draw, container, false);
         timeLeftTextView = (TextView) rootView.findViewById(R.id.timeLeftTextView);
-        guess = (TextView) rootView.findViewById(R.id.guessWord);
+        guessField = (LinearLayout) rootView.findViewById(R.id.guessField);
         imageView = (ImageView) rootView.findViewById(R.id.imageReceived);
         submitButton = (Button) rootView.findViewById(R.id.submitButton);
+        guess = (EditText) rootView.findViewById(R.id.guessWord);
 
         imageView.setVisibility(View.VISIBLE);
-        guess.setVisibility(View.VISIBLE);
+        guessField.setVisibility(View.VISIBLE);
         submitButton.setVisibility(View.VISIBLE);
+
+        guess.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(guess.getText().length() > 0){
+                    submitButton.setBackgroundResource(R.drawable.checkmark);
+                }
+                else{
+                    submitButton.setBackgroundResource(R.drawable.checkmark_grey);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +109,7 @@ public class GuessFragment extends Fragment {
                 timeLeftTextView.setText("Seconds left: 0");
                 submitButton.setOnClickListener(null);
                 String gamepin = "3"; //TODO: Get gameping from real location.
+                String playerId = "2"; //TODO: Get real player ID
 
                 /*
                 NetworkAbstraction.getInstance(getContext()).submitDrawing(getContext(), gamepin, finishedDrawing,new Response.Listener<JSONObject>(){
@@ -89,6 +119,8 @@ public class GuessFragment extends Fragment {
                         System.out.println("Svar:"+response);
                     }
                 });*/
+                FragmentChanger fc = new FragmentChanger();
+                fc.goToDrawView(getActivity(), gamepin, playerId);
             }
         }.start();
 
