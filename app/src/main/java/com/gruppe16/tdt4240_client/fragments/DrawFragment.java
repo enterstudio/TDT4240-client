@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.gruppe16.tdt4240_client.DrawingView;
+import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
 
@@ -98,6 +100,8 @@ public class DrawFragment extends Fragment {
                         System.out.println("SvarDrawing:"+response);
                     }
                 });
+                FragmentChanger fc = new FragmentChanger();
+                fc.goToGuessView(getActivity());
             }
         }.start();
 
@@ -110,6 +114,15 @@ public class DrawFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    public void changeFragment(){
+        GuessFragment fragment = GuessFragment.newInstance();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm
+                .beginTransaction()
+                .add(R.id.container, fragment)
+                .commit();
     }
 
 
