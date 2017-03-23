@@ -27,6 +27,7 @@ public class FragmentChanger {
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()
+                .addToBackStack(null)
                 .replace(R.id.container, fragment)
                 .commit();
     }
@@ -46,6 +47,7 @@ public class FragmentChanger {
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()
+                .addToBackStack(null)
                 .replace(R.id.container, fragment)
                 .commit();
     }
