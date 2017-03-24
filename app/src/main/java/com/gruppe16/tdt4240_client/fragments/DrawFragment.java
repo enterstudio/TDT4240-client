@@ -29,7 +29,8 @@ public class DrawFragment extends Fragment {
     private OnSubmitDrawingListener mListener;
     private Button drawButton;
     private Button eraseButton;
-    private Bitmap finishedDrawing;
+    //TODO: static må fjernes når vi får hentet bilde fra server
+    public static Bitmap finishedDrawing;
 
 
 
@@ -82,7 +83,7 @@ public class DrawFragment extends Fragment {
 
 
         //The countdown timer
-        new CountDownTimer(30000, 1000) {
+        new CountDownTimer(10000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timeLeftTextView.setText("Seconds left: " + millisUntilFinished / 1000);
             }
@@ -90,7 +91,6 @@ public class DrawFragment extends Fragment {
                 timeLeftTextView.setText("Seconds left: 0");
                 drawingView.stopDraw();
                 finishedDrawing = drawingView.getFinishedDrawing();
-                //someImageView.setImageBitmap(finishedDrawing);
                 String gamepin = getArguments().getString("gamepin");
                 String playerId = "2";
 
@@ -101,6 +101,7 @@ public class DrawFragment extends Fragment {
                         System.out.println("SvarDrawing:"+response);
                     }
                 });
+
                 FragmentChanger fc = new FragmentChanger();
                 fc.goToGuessView(getActivity());
             }

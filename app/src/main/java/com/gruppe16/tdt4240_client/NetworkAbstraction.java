@@ -18,6 +18,9 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 
+import static com.gruppe16.tdt4240_client.MainActivity.round;
+import static com.gruppe16.tdt4240_client.fragments.DrawFragment.finishedDrawing;
+
 /**
  * Created by Sigurd on 09.03.2017.
  */
@@ -85,6 +88,7 @@ public class NetworkAbstraction {
             jsonParams.put("image", image_str);
             jsonParams.put("gamepin", gamepin);
             jsonParams.put("playerId", playerId);
+            jsonParams.put("round", round);
 
             Request<JSONObject> request = new JsonObjectRequest(POST, drawingUrl, jsonParams, responseHandler, errorListener);
             requestQueue.add(request);
@@ -104,6 +108,7 @@ public class NetworkAbstraction {
             jsonParams.put("guess", guess);
             jsonParams.put("gamepin", gamepin);
             jsonParams.put("playerId", playerId);
+            jsonParams.put("round", round);
 
             Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, jsonParams, responseHandler, errorListener);
             requestQueue.add(request);
@@ -114,9 +119,23 @@ public class NetworkAbstraction {
         }
     }
 
+    public Bitmap getPage(String gamepin, String playerId, int round, Response.Listener<JSONObject> responseHandler){
+        String url2 = String.format("%s/%s?player=%s&round=%n", gameUrl, gamepin, playerId, round);
+        String url = gameUrl + "/" + gamepin + "?player=" + playerId + "&round=" +round;
+        Request<JSONObject> request = new JsonObjectRequest(GET, url, null, responseHandler, errorListener);
+        requestQueue.add(request);
 
-    public void getDrawing(){
-        //TODO: implement
+        //TODO: denne må endres
+        return finishedDrawing;
+    }
+
+    public void getDrawing(String gamepin, String playerId, Response.Listener<JSONObject> responseHandler){
+        /*
+        String requestUrl = url + "/drawing/:" + "/0";
+        Request<JSONObject> request = new JsonObjectRequest(GET, requestUrl, responseHandler, errorListener);
+        requestQueue.add(request);
+        */
+
     }
 
 
