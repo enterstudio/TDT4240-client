@@ -91,9 +91,10 @@ public class DrawFragment extends Fragment {
                 drawingView.stopDraw();
                 finishedDrawing = drawingView.getFinishedDrawing();
                 //someImageView.setImageBitmap(finishedDrawing);
-                String gamepin = "3"; //TODO: Get gameping from real location.
+                String gamepin = getArguments().getString("gamepin");
+                String playerId = "2";
 
-                NetworkAbstraction.getInstance(getContext()).submitDrawing(gamepin, finishedDrawing,new Response.Listener<JSONObject>(){
+                NetworkAbstraction.getInstance(getContext()).submitDrawing(gamepin, playerId, finishedDrawing,new Response.Listener<JSONObject>(){
 
                     @Override
                     public void onResponse(JSONObject response) {

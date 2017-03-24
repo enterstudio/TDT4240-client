@@ -73,7 +73,7 @@ public class NetworkAbstraction {
     }
 
 
-    public void submitDrawing(String gamepin, Bitmap drawing, Response.Listener<JSONObject> responseHandler){
+    public void submitDrawing(String gamepin, String playerId, Bitmap drawing, Response.Listener<JSONObject> responseHandler){
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         drawing.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
@@ -84,6 +84,7 @@ public class NetworkAbstraction {
         try {
             jsonParams.put("image", image_str);
             jsonParams.put("gamepin", gamepin);
+            jsonParams.put("playerId", playerId);
 
             Request<JSONObject> request = new JsonObjectRequest(POST, drawingUrl, jsonParams, responseHandler, errorListener);
             requestQueue.add(request);
@@ -96,12 +97,13 @@ public class NetworkAbstraction {
     }
 
 
-    public void submitGuess(String gamepin, String guess, Response.Listener<JSONObject> responseHandler){
+    public void submitGuess(String gamepin, String playerId, String guess, Response.Listener<JSONObject> responseHandler){
 
         JSONObject jsonParams = new JSONObject();
         try {
             jsonParams.put("guess", guess);
             jsonParams.put("gamepin", gamepin);
+            jsonParams.put("playerId", playerId);
 
             Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, jsonParams, responseHandler, errorListener);
             requestQueue.add(request);

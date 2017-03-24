@@ -31,6 +31,9 @@ public class GuessFragment extends Fragment {
     private Button submitButton;
     private GuessFragment.OnSubmitGuessListener mListener;
     private ImageView imageView;
+    private boolean guessSent = false;
+    private String gamepin;
+    private String playerId;
 
     public GuessFragment() {
         // Required empty public constructor
@@ -51,6 +54,10 @@ public class GuessFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        gamepin = getArguments().getString("gamepin");
+        playerId = "2"; //TODO: get real PlayerId;
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_draw, container, false);
         timeLeftTextView = (TextView) rootView.findViewById(R.id.timeLeftTextView);
@@ -88,15 +95,11 @@ public class GuessFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String guessedWord = guess.getText().toString();
-                String gamepin = "2"; //TODO get real gamepin
-                NetworkAbstraction.getInstance(getContext()).submitGuess(gamepin, guessedWord,new Response.Listener<JSONObject>(){
+                if(!guessSent) {
+                    sendGuess();
+                    guessSent = true;
+                }
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        System.out.println("SvarGuess:"+response);
-                    }
-                });
             }
         });
 
@@ -108,23 +111,27 @@ public class GuessFragment extends Fragment {
             public void onFinish() {
                 timeLeftTextView.setText("Seconds left: 0");
                 submitButton.setOnClickListener(null);
-                String gamepin = "3"; //TODO: Get gameping from real location.
-                String playerId = "2"; //TODO: Get real player ID
 
-                /*
-                NetworkAbstraction.getInstance(getContext()).submitDrawing(getContext(), gamepin, finishedDrawing,new Response.Listener<JSONObject>(){
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        System.out.println("Svar:"+response);
-                    }
-                });*/
+                if(!guessSent){
+                    sendGuess();
+                }
                 FragmentChanger fc = new FragmentChanger();
                 fc.goToDrawView(getActivity(), gamepin, playerId);
             }
         }.start();
 
         return rootView;
+    }
+
+    private void sendGuess(){
+        String guessedWord = guess.getText().toString();
+        NetworkAbstraction.getInstance(getContext()).submitGuess(gamepin, playerId, guessedWord, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println("SvarGuess:" + response);
+            }
+        });
     }
 
     @Override

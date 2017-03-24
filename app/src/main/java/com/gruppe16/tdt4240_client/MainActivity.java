@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity implements JoinGameFragment.
     }
 
     public void initializeStartFragment(){
-        MenuFragment fragment = MenuFragment.newInstance();
-        //GuessFragment fragment = GuessFragment.newInstance();
+        //MenuFragment fragment = MenuFragment.newInstance();
+        GuessFragment fragment = GuessFragment.newInstance();
         FragmentManager fm = getSupportFragmentManager();
         fm
                 .beginTransaction()
