@@ -22,13 +22,18 @@
                 android:indeterminate="true" />
         </RelativeLayout>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            />
+
         <TextView
             android:layout_width="301dp"
             android:layout_height="76dp"
             android:layout_gravity="center"
             android:text="Waiting for players..."
             android:textAlignment="center"
-            android:textSize="30dp" />
+            android:textSize="@dimen/text_medium" />
 
 
     </LinearLayout>

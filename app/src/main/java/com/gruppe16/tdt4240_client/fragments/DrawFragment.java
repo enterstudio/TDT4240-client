@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -27,8 +28,8 @@ public class DrawFragment extends Fragment {
     private DrawingView drawingView;
     private TextView timeLeftTextView;
     private OnSubmitDrawingListener mListener;
-    private Button drawButton;
-    private Button eraseButton;
+    private ImageButton drawButton;
+    private ImageButton eraseButton;
     //TODO: static må fjernes når vi får hentet bilde fra server
     public static Bitmap finishedDrawing;
 
@@ -56,13 +57,15 @@ public class DrawFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_draw, container, false);
         drawingView = (DrawingView) rootView.findViewById(R.id.drawingView);
         timeLeftTextView = (TextView) rootView.findViewById(R.id.timeLeftTextView);
-        drawButton = (Button) rootView.findViewById(R.id.drawButton);
-        eraseButton = (Button) rootView.findViewById(R.id.eraseButton);
+        drawButton = (ImageButton) rootView.findViewById(R.id.drawButton);
+        eraseButton = (ImageButton) rootView.findViewById(R.id.eraseButton);
 
         rootView.findViewById(R.id.drawWord).setVisibility(View.VISIBLE);
         drawingView.setVisibility(View.VISIBLE);
         drawButton.setVisibility(View.VISIBLE);
         eraseButton.setVisibility(View.VISIBLE);
+        drawButton.setActivated(true);
+        eraseButton.setActivated(false);
 
         //Erase and draw buttons functionality
         drawButton.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +73,8 @@ public class DrawFragment extends Fragment {
             public void onClick(View v) {
                 drawingView.mPaint.setColor(Color.BLACK);
                 drawingView.mPaint.setStrokeWidth(12);
+                drawButton.setActivated(true);
+                eraseButton.setActivated(false);
             }
         });
 
@@ -78,6 +83,9 @@ public class DrawFragment extends Fragment {
             public void onClick(View v) {
                 drawingView.mPaint.setColor(Color.WHITE);
                 drawingView.mPaint.setStrokeWidth(80);
+                eraseButton.setActivated(true);
+                drawButton.setActivated(false);
+
             }
         });
 

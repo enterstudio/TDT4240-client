@@ -7,13 +7,27 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:buttonStyle">@style/Button</item>
+        <item name="android:textViewStyle">@style/TextView</item>
     </style>
 
     <style name="Button" parent="android:style/Widget.Button">
         <item name="android:background">@drawable/button_bg</item>
         <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">25sp</item>
         <item name="android:fontFamily">casual</item>
+    </style>
+
+
+    <style name="TextView">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:fontFamily">casual</item>
+    </style>
+
+    <style name="EditText">
+        <item name="colorControlNormal">#ffffff</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/textEditColor</item>
     </style>
 
 </resources>

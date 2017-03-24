@@ -52,7 +52,7 @@ public class CreateGameFragment extends Fragment implements Response.Listener<JS
     }
 
     public void setPlayers(int playerCount){
-        playersCountTextView.setText(playerCount + "");
+        playersCountTextView.setText("Players connected: " + playerCount + "");
     }
 
     @Override
