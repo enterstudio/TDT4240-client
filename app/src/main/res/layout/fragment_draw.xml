@@ -21,11 +21,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_small" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                />
-
             <TextView
                 android:id="@+id/drawWord"
                 android:layout_width="match_parent"
@@ -37,13 +32,12 @@
 
             <EditText
                 android:id="@+id/guessWord"
-                android:padding="10sp"
                 android:textAlignment="center"
                 android:hint="guess word..."
                 android:layout_width="match_parent"
                 android:layout_gravity="center"
                 android:layout_height="match_parent"
-                android:textSize="40dp"
+                android:textSize="30dp"
                 android:ems="10"
                 android:fontFamily="casual"
                 android:textColor="@color/textEditColor"
