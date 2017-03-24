@@ -15,32 +15,44 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="40sp"
+            android:textSize="@dimen/text_large"
             android:layout_gravity="center"
-            android:layout_marginBottom="45dp"
             android:id="@+id/gamePinTextView" />
 
-        <Button
-            android:layout_width="200dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center"
-            android:text="Start"
-            android:id="@+id/startGameButton" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
             android:text="Waiting for players..."
-            android:textSize="20sp"
+            android:textSize="@dimen/text_medium"
             android:layout_gravity="center" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:layout_marginTop="3dp"
+            android:textSize="@dimen/text_small"
+            android:text="vhbjnkm"
             android:layout_gravity="center"
             android:id="@+id/playersCountTextView" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            />
+
+        <Button
+            android:layout_width="220dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:text="Start"
+            android:id="@+id/startGameButton" />
+
+
 
     </LinearLayout>
 

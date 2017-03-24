@@ -11,95 +11,111 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/timeLeftTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10sp" />
+                android:textSize="@dimen/text_small" />
 
-        </LinearLayout>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                />
 
-        <TextView
-            android:id="@+id/drawWord"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10sp"
-            android:text="Banana"
-            android:textAlignment="center"
-            android:textSize="32sp"
-            android:visibility="gone"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/guessField"
-            android:visibility="gone">
+            <TextView
+                android:id="@+id/drawWord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Banana"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_large"
+                android:visibility="gone"/>
 
             <EditText
                 android:id="@+id/guessWord"
-                android:layout_width="120pt"
-                android:layout_height="wrap_content"
                 android:padding="10sp"
                 android:textAlignment="center"
-                android:textSize="32sp" />
-
-            <Button
-                android:layout_width="20pt"
-                android:layout_height="20pt"
-                android:background="@drawable/checkmark_grey"
-                android:id="@+id/submitButton"
-                android:padding="1pt"
-                />
+                android:hint="guess word..."
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="match_parent"
+                android:textSize="40dp"
+                android:ems="10"
+                android:fontFamily="casual"
+                android:textColor="@color/textEditColor"
+                android:theme="@style/EditText"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
 
-        <com.gruppe16.tdt4240_client.DrawingView
-            android:id="@+id/drawingView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150pt"
-            android:background="#FFFFFF"
-            android:visibility="gone"/>
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:orientation="vertical"
+            android:background="#ffffff">
 
-        <ImageView
-            android:id="@+id/imageReceived"
-            android:layout_width="match_parent"
-            android:layout_height="150pt"
-            android:visibility="gone"/>
+            <com.gruppe16.tdt4240_client.DrawingView
+                android:id="@+id/drawingView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/imageReceived"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+        </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Draw"
+            <ImageButton
+                android:layout_gravity="center_vertical"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:id="@+id/drawButton"
-                android:visibility="gone"/>
+                android:src="@drawable/pencil"
+                android:visibility="gone"
+                android:background="@drawable/imagebuttons"
+                android:adjustViewBounds="true"
+                android:layout_marginRight="5dp"
+                android:scaleType="fitCenter"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Erase"
+            <ImageButton
+                android:layout_gravity="center_vertical"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:id="@+id/eraseButton"
-                android:visibility="gone"/>
+                android:src="@drawable/eraser"
+                android:visibility="gone"
+                android:background="@drawable/imagebuttons"
+                android:adjustViewBounds="true"
+                android:layout_marginLeft="5dp"
+                android:scaleType="fitCenter"/>
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Submit guess"
-                android:visibility="gone"/>
+                android:layout_gravity="center_vertical"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:background="@drawable/button_bg"
+                android:id="@+id/submitButton"
+                android:text="Submit"
+                android:visibility="gone"
+                />
 
         </LinearLayout>
-
-
     </LinearLayout>
 
 

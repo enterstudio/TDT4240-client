@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -30,7 +29,7 @@ import static com.gruppe16.tdt4240_client.MainActivity.round;
 
 public class GuessFragment extends Fragment {
 
-    private LinearLayout guessField;
+    //private LinearLayout guessField;
     private EditText guess;
     private TextView timeLeftTextView;
     private Button submitButton;
@@ -67,13 +66,11 @@ public class GuessFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_draw, container, false);
         timeLeftTextView = (TextView) rootView.findViewById(R.id.timeLeftTextView);
-        guessField = (LinearLayout) rootView.findViewById(R.id.guessField);
+        //guessField = (LinearLayout) rootView.findViewById(R.id.guessField);
         imageView = (ImageView) rootView.findViewById(R.id.imageReceived);
         submitButton = (Button) rootView.findViewById(R.id.submitButton);
         guess = (EditText) rootView.findViewById(R.id.guessWord);
-
-
-        guessField.setVisibility(View.VISIBLE);
+        guess.setVisibility(View.VISIBLE);
         submitButton.setVisibility(View.VISIBLE);
 
         drawing = NetworkAbstraction.getInstance(getContext()).getPage(gamepin, playerId, round, new Response.Listener<JSONObject>(){
@@ -103,10 +100,10 @@ public class GuessFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(guess.getText().length() > 0){
-                    submitButton.setBackgroundResource(R.drawable.checkmark);
+                    submitButton.setBackgroundResource(R.drawable.button_bg_active);
                 }
                 else{
-                    submitButton.setBackgroundResource(R.drawable.checkmark_grey);
+                    submitButton.setBackgroundResource(R.drawable.button_bg);
                 }
             }
 
