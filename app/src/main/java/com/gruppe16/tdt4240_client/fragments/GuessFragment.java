@@ -1,6 +1,9 @@
 package com.gruppe16.tdt4240_client.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -23,6 +26,8 @@ import com.gruppe16.tdt4240_client.R;
 
 import org.json.JSONObject;
 
+import static com.gruppe16.tdt4240_client.MainActivity.round;
+
 public class GuessFragment extends Fragment {
 
     private LinearLayout guessField;
@@ -34,6 +39,7 @@ public class GuessFragment extends Fragment {
     private boolean guessSent = false;
     private String gamepin;
     private String playerId;
+    private Bitmap drawing;
 
     public GuessFragment() {
         // Required empty public constructor
@@ -66,9 +72,27 @@ public class GuessFragment extends Fragment {
         submitButton = (Button) rootView.findViewById(R.id.submitButton);
         guess = (EditText) rootView.findViewById(R.id.guessWord);
 
-        imageView.setVisibility(View.VISIBLE);
+
         guessField.setVisibility(View.VISIBLE);
         submitButton.setVisibility(View.VISIBLE);
+
+        drawing = NetworkAbstraction.getInstance(getContext()).getPage(gamepin, playerId, round, new Response.Listener<JSONObject>(){
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                System.out.println("SvarPage:"+response);
+            }
+        });
+
+        Drawable d = new BitmapDrawable(getResources(), drawing);
+
+        if(d != null){
+            System.out.println("Drawing: " + d);
+            imageView.setBackground(d);
+        }
+
+        imageView.setVisibility(View.VISIBLE);
 
         guess.addTextChangedListener(new TextWatcher() {
             @Override
@@ -104,7 +128,7 @@ public class GuessFragment extends Fragment {
         });
 
         //The countdown timer
-        new CountDownTimer(60000, 1000) {
+        new CountDownTimer(10000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timeLeftTextView.setText("Seconds left: " + millisUntilFinished / 1000);
             }
