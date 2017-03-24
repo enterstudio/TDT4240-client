@@ -69,7 +69,6 @@
             android:id="@+id/imageReceived"
             android:layout_width="match_parent"
             android:layout_height="150pt"
-            android:src="@drawable/waiting"
             android:visibility="gone"/>
 
 

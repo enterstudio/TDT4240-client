@@ -16,6 +16,8 @@ import com.gruppe16.tdt4240_client.fragments.WaitingFragment;
 
 import org.json.JSONObject;
 
+import static com.gruppe16.tdt4240_client.MainActivity.round;
+
 /**
  * Created by Camilla on 09.03.2017.
  */
@@ -63,6 +65,8 @@ public class FragmentChanger {
     }
 
     public static void goToDrawView(FragmentActivity activity, String gamePin, String playerID){
+        round++;
+        System.out.println("Current round: " + round);
         DrawFragment fragment = DrawFragment.newInstance();
         Bundle args = new Bundle();
         args.putString("gamePin", gamePin);
@@ -76,6 +80,8 @@ public class FragmentChanger {
     }
 
     public static void goToGuessView(FragmentActivity activity){
+        round++;
+        System.out.println("Current round: " + round);
         GuessFragment fragment = GuessFragment.newInstance();
         FragmentManager fm = activity.getSupportFragmentManager();
         fm

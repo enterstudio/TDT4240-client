@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Window;
 
 import com.gruppe16.tdt4240_client.fragments.DrawFragment;
 import com.gruppe16.tdt4240_client.fragments.GuessFragment;
@@ -11,6 +12,8 @@ import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
 import com.gruppe16.tdt4240_client.fragments.MenuFragment;
 
 public class MainActivity extends AppCompatActivity implements JoinGameFragment.JoinGameByPinListener, DrawFragment.OnSubmitDrawingListener {
+
+    public static int round = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements JoinGameFragment.
 
     public void initializeStartFragment(){
         //MenuFragment fragment = MenuFragment.newInstance();
-        GuessFragment fragment = GuessFragment.newInstance();
+        DrawFragment fragment = DrawFragment.newInstance();
         FragmentManager fm = getSupportFragmentManager();
         fm
                 .beginTransaction()
