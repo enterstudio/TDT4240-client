@@ -11,6 +11,7 @@ import com.gruppe16.tdt4240_client.fragments.DrawFragment;
 import com.gruppe16.tdt4240_client.fragments.GuessFragment;
 import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
 import com.gruppe16.tdt4240_client.fragments.MenuFragment;
+import com.gruppe16.tdt4240_client.fragments.ScoreboardFragment;
 import com.gruppe16.tdt4240_client.fragments.SlideShowFragment;
 import com.gruppe16.tdt4240_client.fragments.WaitingFragment;
 
@@ -91,5 +92,18 @@ public class FragmentChanger {
                 .replace(R.id.container, fragment)
                 .commit();
     }
+
+    public static void goToScoreboardView(String myPlayerId, FragmentActivity activity){
+        ScoreboardFragment fragment = ScoreboardFragment.newInstance();
+        Bundle args = new Bundle();
+        args.putString("myPlayerId", myPlayerId);
+        fragment.setArguments(args);
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fm
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+    }
+
 }
 
