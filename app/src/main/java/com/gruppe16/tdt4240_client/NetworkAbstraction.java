@@ -17,6 +17,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
 
 import static com.gruppe16.tdt4240_client.MainActivity.round;
 import static com.gruppe16.tdt4240_client.fragments.DrawFragment.finishedDrawing;
@@ -36,6 +37,7 @@ public class NetworkAbstraction {
     private String userUrl = url + "/user";
     private String guessUrl = url + "/guess";
     private String drawingUrl = url + "/drawing";
+    private String scoreUrl = url + "/score";
     private RequestQueue requestQueue;
     private NetworkErrorHandler errorListener = new NetworkErrorHandler();
 
@@ -129,15 +131,26 @@ public class NetworkAbstraction {
         return finishedDrawing;
     }
 
-    public void getDrawing(String gamepin, String playerId, Response.Listener<JSONObject> responseHandler){
-        /*
-        String requestUrl = url + "/drawing/:" + "/0";
-        Request<JSONObject> request = new JsonObjectRequest(GET, requestUrl, responseHandler, errorListener);
+    public void getDrawing(String drawingId, Response.Listener<JSONObject> responseHandler){
+        String requestUrl = drawingUrl + "/" + drawingId;
+        Request<JSONObject> request = new JsonObjectRequest(GET, requestUrl, null, responseHandler, errorListener);
         requestQueue.add(request);
-        */
-
     }
 
+    public void submitScore(Map<String, Integer> map, Response.Listener<JSONObject> listener){
+        JSONObject jsonParams = new JSONObject();
+        try {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                String key = entry.getKey();
+                int value = entry.getValue();
+                jsonParams.put(key, value);
+            }
+            Request<JSONObject> request = new JsonObjectRequest(POST, scoreUrl, jsonParams, listener, errorListener);
+            requestQueue.add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void getGuess(){
         //TODO: implement

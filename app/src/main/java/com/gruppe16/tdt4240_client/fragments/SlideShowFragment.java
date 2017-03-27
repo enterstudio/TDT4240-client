@@ -18,6 +18,8 @@ import com.gruppe16.tdt4240_client.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SlideShowFragment extends Fragment {
 
@@ -31,6 +33,8 @@ public class SlideShowFragment extends Fragment {
     private String myPlayerId;
     private int currentGuessIndex;
     private int guessBlockLength;
+    private JSONArray playerList;
+    private Map<String, Integer> map;
 
     public SlideShowFragment() {
         // Required empty public constructor
@@ -53,7 +57,6 @@ public class SlideShowFragment extends Fragment {
         initialWordView = (TextView) rootView.findViewById(R.id.initialWordView);
         guessPlayerIdView = (TextView) rootView.findViewById(R.id.guessPlayerIdView);
         guessValueView = (TextView) rootView.findViewById(R.id.guessValueView);
-
         drawerIdView = (TextView) rootView.findViewById(R.id.drawerIdView);
         drawingView = (ImageView) rootView.findViewById(R.id.drawingView);
 
@@ -63,11 +66,13 @@ public class SlideShowFragment extends Fragment {
         declineButton.setOnClickListener(onClickListener);
 
         // Get the gamePin value from arguments
-        gamePin = getArguments().getString("gamePin");
-        myPlayerId = getArguments().getString("myPlayerId");
+        gamePin = "1";//getArguments().getString("gamePin");
+        myPlayerId = "1";//getArguments().getString("myPlayerId");
 
         // set current guess index to 0
         currentGuessIndex = 0;
+
+        map = new HashMap<>();
 
         // poll for updated game information
         getGameFromServer();
@@ -85,15 +90,22 @@ public class SlideShowFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 // Get the game object itself.
                 try {
+
                     JSONObject game = response.getJSONObject("game");
+
                     // Get the array of players
-                    // TODO: playerList is not used
-                    JSONArray playerList = game.getJSONArray("players");
+                    playerList = game.getJSONArray("players");
+
+                    // Update the map with the correct number of players
+                    for (int i = 0; i < playerList.length(); i++){
+                        map.put(playerList.getJSONObject(i).toString(), 0);
+                    }
+
                     // Get the initial word
                     JSONArray initialWordList = game.getJSONArray("initialWord");
 
                     // Get the initial word of the current player
-                    int index = (Integer.parseInt(myPlayerId)) - 1;
+                    int index = (Integer.parseInt(myPlayerId));
                     String initialWord = initialWordList.get(index).toString();
                     // Display the initial word
                     initialWordView.setText(initialWord);
@@ -147,7 +159,6 @@ public class SlideShowFragment extends Fragment {
                 }
             }
         };
-        // TODO: Fix the getDrawing method in NetworkAbstraction
         NetworkAbstraction.getInstance(getContext()).getDrawing(drawingId, drawingListener);
     }
 
@@ -158,10 +169,26 @@ public class SlideShowFragment extends Fragment {
                 case R.id.okButton:
                     try {
 
-                        // TODO: Update the server when answer is accepted
+                        if (guessBlock != null ) {
+                            // Find the current guess
+                            JSONObject guess = guessBlock.getJSONObject(currentGuessIndex);
+                            // Find the id of the drawer
+                            String drawerId = guess.getString("drawerId");
+                            // Find the id of the guesser
+                            String guesserId = guess.getString("guesserId");
+                            // Update the score for the drawer and the guesser
+                            map.put(drawerId, map.get(drawerId) + 1);
+                            map.put(guesserId, map.get(guesserId) + 1);
+                        }
 
                         if (currentGuessIndex++ >= guessBlockLength) {
-                            FragmentChanger.goToScoreboardView(myPlayerId, getActivity());
+                            FragmentChanger.goToScoreboardView(myPlayerId, gamePin, getActivity());
+                            NetworkAbstraction.getInstance(getActivity()).submitScore(map, new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    System.out.println(response);
+                                }
+                            });
                         }
                         else {
                             // increment the current guess index
@@ -186,18 +213,22 @@ public class SlideShowFragment extends Fragment {
                             String guessValue = guess.getString("guessValue");
                             guessValueView.setText(guessValue);
                         }
-                    }
-                    catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                     break;
                 case R.id.declinedButton:
                     try {
-                        // TODO: Update the server when answer is declined
 
                         if (currentGuessIndex++ >= guessBlockLength){
-                            FragmentChanger.goToScoreboardView(myPlayerId, getActivity());
+                            FragmentChanger.goToScoreboardView(myPlayerId, gamePin, getActivity());
+                            NetworkAbstraction.getInstance(getActivity()).submitScore(map, new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    System.out.println(response);
+                                }
+                            });
                         }
                         else {
                             // increment the current guess index
@@ -223,8 +254,7 @@ public class SlideShowFragment extends Fragment {
                             guessValueView.setText(guessValue);
                         }
 
-                    }
-                    catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 break;

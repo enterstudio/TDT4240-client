@@ -93,10 +93,11 @@ public class FragmentChanger {
                 .commit();
     }
 
-    public static void goToScoreboardView(String myPlayerId, FragmentActivity activity){
+    public static void goToScoreboardView(String myPlayerId, String gamePin, FragmentActivity activity){
         ScoreboardFragment fragment = ScoreboardFragment.newInstance();
         Bundle args = new Bundle();
         args.putString("myPlayerId", myPlayerId);
+        args.putString("gamePin", gamePin);
         fragment.setArguments(args);
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
