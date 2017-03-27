@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +91,7 @@ public class GuessFragment extends Fragment {
         }
 
         imageView.setVisibility(View.VISIBLE);
+        guess.setInputType(InputType.TYPE_CLASS_TEXT);
 
         guess.addTextChangedListener(new TextWatcher() {
             @Override
@@ -119,13 +121,15 @@ public class GuessFragment extends Fragment {
                 if(!guessSent) {
                     sendGuess();
                     guessSent = true;
+                    guess.setEnabled(false);
+                    submitButton.setBackgroundResource(R.drawable.button_bg);
                 }
 
             }
         });
 
         //The countdown timer
-        new CountDownTimer(10000, 1000) {
+        new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timeLeftTextView.setText("Seconds left: " + millisUntilFinished / 1000);
             }
