@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.gruppe16.tdt4240_client.fragments.CreateGameFragment;
 import com.gruppe16.tdt4240_client.fragments.DrawFragment;
+import com.gruppe16.tdt4240_client.fragments.ExitFragment;
 import com.gruppe16.tdt4240_client.fragments.GuessFragment;
 import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
 import com.gruppe16.tdt4240_client.fragments.MenuFragment;
@@ -16,6 +17,9 @@ import com.gruppe16.tdt4240_client.fragments.SlideShowFragment;
 import com.gruppe16.tdt4240_client.fragments.WaitingFragment;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.gruppe16.tdt4240_client.MainActivity.round;
 
@@ -98,6 +102,20 @@ public class FragmentChanger {
         Bundle args = new Bundle();
         args.putString("myPlayerId", myPlayerId);
         args.putString("gamePin", gamePin);
+        fragment.setArguments(args);
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fm
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+    }
+
+    public static void goToExitView(String myPlayerId, String gamePin, ArrayList<Integer> indexOfWinners, FragmentActivity activity){
+        ExitFragment fragment = ExitFragment.newInstance();
+        Bundle args = new Bundle();
+        args.putString("myPlayerId", myPlayerId);
+        args.putString("gamePin", gamePin);
+        args.putIntegerArrayList("winners", indexOfWinners);
         fragment.setArguments(args);
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
