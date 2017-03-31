@@ -1,7 +1,6 @@
 package com.gruppe16.tdt4240_client.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,42 +10,46 @@ import android.widget.TextView;
 
 import com.gruppe16.tdt4240_client.R;
 
+import java.util.ArrayList;
+
 
 public class ExitFragment extends Fragment {
 
-    private TextView playerWonTextView;
-    private int playerWon;
+    // Required empty public constructor
+    public ExitFragment() {}
 
-
-    public ExitFragment() {
-        // Required empty public constructor
+    public static ExitFragment newInstance() {
+        return new ExitFragment();
     }
-
-    public int getPlayerWon(){
-        return playerWon;
-    }
-
-    public void setPlayerWon(){
-        playerWon=3;
-    }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_exit, container, false);
-        playerWonTextView = (TextView) rootView.findViewById(R.id.gamePinTextView);
+        TextView playerWonTextView = (TextView) rootView.findViewById(R.id.playerWonTextView);
 
+        ArrayList<Integer> winners = this.getArguments().getIntegerArrayList("winners");
 
-        playerWonTextView.setText("Player " + getPlayerWon() + " has won!");
+        assert winners != null;
+        if (winners.size() == 0){
+            playerWonTextView.setText(getString(R.string.player) + " " + winners.get(0) + "has won!");
+        }
+        else {
+            String winnerText = "";
+            for (int winner : winners){
+                winnerText += winner + ", ";
+            }
+            winnerText = winnerText.replaceAll(", $", "");
+            playerWonTextView.setText(getString(R.string.players) + " " + winnerText + " has won!");
+        }
 
         return rootView;
+    }
 
-    };
+
 
     @Override
     public void onAttach(Context context) {
