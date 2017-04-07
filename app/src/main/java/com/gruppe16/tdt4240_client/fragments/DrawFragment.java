@@ -1,43 +1,46 @@
 package com.gruppe16.tdt4240_client.fragments;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import com.android.volley.Response;
 import com.gruppe16.tdt4240_client.DrawingView;
 import com.gruppe16.tdt4240_client.FragmentChanger;
+import com.gruppe16.tdt4240_client.GameState;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
+import com.gruppe16.tdt4240_client.actions.ActionContext;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 
 public class DrawFragment extends Fragment {
 
     private DrawingView drawingView;
     private TextView timeLeftTextView;
+    private TextView drawWord;
     private OnSubmitDrawingListener mListener;
-    private ImageButton drawButton;
-    private ImageButton eraseButton;
-    //TODO: static må fjernes når vi får hentet bilde fra server
-    public static Bitmap finishedDrawing;
+    private ImageButton imageButton;
+    private GameState gameState;
+
+    public Bitmap finishedDrawing;
 
 
-
-    public DrawFragment() {
-        // Required empty public constructor
-    }
+    // Required empty public constructor
+    public DrawFragment() {}
 
     public static DrawFragment newInstance() {
         DrawFragment fragment = new DrawFragment();
@@ -50,72 +53,91 @@ public class DrawFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_draw, container, false);
         drawingView = (DrawingView) rootView.findViewById(R.id.drawingView);
         timeLeftTextView = (TextView) rootView.findViewById(R.id.timeLeftTextView);
-        drawButton = (ImageButton) rootView.findViewById(R.id.drawButton);
-        eraseButton = (ImageButton) rootView.findViewById(R.id.eraseButton);
+        imageButton = (ImageButton) rootView.findViewById(R.id.actionButton);
+        drawWord = (TextView) rootView.findViewById(R.id.drawWord);
+
+        gameState = GameState.getInstance();
 
         rootView.findViewById(R.id.drawWord).setVisibility(View.VISIBLE);
         drawingView.setVisibility(View.VISIBLE);
-        drawButton.setVisibility(View.VISIBLE);
-        eraseButton.setVisibility(View.VISIBLE);
-        drawButton.setActivated(true);
-        eraseButton.setActivated(false);
+        imageButton.setVisibility(View.VISIBLE);
+        imageButton.setActivated(true);
 
-        //Erase and draw buttons functionality
-        drawButton.setOnClickListener(new View.OnClickListener() {
+        final ActionContext actionContext = ActionContext.getInstance();
+        actionContext.initializeState();
+        actionContext.setDrawingView(drawingView);
+        actionContext.setImageButton(imageButton);
+
+        final Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawingView.mPaint.setColor(Color.BLACK);
-                drawingView.mPaint.setStrokeWidth(12);
-                drawButton.setActivated(true);
-                eraseButton.setActivated(false);
+                imageButton.startAnimation(shake);
+                actionContext.doAction();
             }
         });
 
-        eraseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawingView.mPaint.setColor(Color.WHITE);
-                drawingView.mPaint.setStrokeWidth(80);
-                eraseButton.setActivated(true);
-                drawButton.setActivated(false);
-
-            }
-        });
-
+        pollForGame();
 
         //The countdown timer
-        new CountDownTimer(10000, 1000) {
+        new CountDownTimer(5000, 1000) {
             public void onTick(long millisUntilFinished) {
-                timeLeftTextView.setText("Seconds left: " + millisUntilFinished / 1000);
+                timeLeftTextView.setText(getString(R.string.seconds_left) + getString(R.string.semicolon) + " " + millisUntilFinished / 1000);
             }
             public void onFinish() {
-                timeLeftTextView.setText("Seconds left: 0");
+                timeLeftTextView.setText(getString(R.string.seconds_left) + getString(R.string.semicolon) + " " + 0);
                 drawingView.stopDraw();
                 finishedDrawing = drawingView.getFinishedDrawing();
-                String gamepin = getArguments().getString("gamepin");
-                String playerId = "2";
 
-                NetworkAbstraction.getInstance(getContext()).submitDrawing(gamepin, playerId, finishedDrawing,new Response.Listener<JSONObject>(){
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                finishedDrawing.compress(Bitmap.CompressFormat.PNG, 90, stream); //compress to which format you want.
+                byte [] byte_arr = stream.toByteArray();
+                String imageString = Base64.encodeToString(byte_arr, Base64.DEFAULT);
 
+                // Update the game state with the compressed image string
+                GameState.getInstance().setImageString(imageString);
+
+                NetworkAbstraction.getInstance(getContext()).submitDrawing(new Response.Listener<JSONObject>(){
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println("SvarDrawing:"+response);
+                        try {
+                            if (response.getString("status").equals("success")){
+                                gameState.setRound(gameState.getRound() + 1);
+                                FragmentChanger.goToGuessView(getActivity());
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
-
-                FragmentChanger fc = new FragmentChanger();
-                fc.goToGuessView(getActivity());
             }
         }.start();
 
         return rootView;
+    }
+
+    private void pollForGame(){
+        NetworkAbstraction.getInstance(getActivity()).pollForGame(new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (gameState.getRound() == 0){
+                        JSONArray initialWords = response.getJSONArray("initialWords");
+                        int id = Integer.parseInt(gameState.getMyPlayerId());
+                        drawWord.setText(initialWords.get(id) + "");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -124,29 +146,6 @@ public class DrawFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
-    }
-
-    public void changeFragment(){
-        GuessFragment fragment = GuessFragment.newInstance();
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        fm
-                .beginTransaction()
-                .add(R.id.container, fragment)
-                .commit();
-    }
-
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        /*
-        if (context instanceof OnSubmitDrawingListener) {
-            mListener = (OnSubmitDrawingListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
     }
 
     @Override
@@ -165,7 +164,7 @@ public class DrawFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnSubmitDrawingListener {
+    interface OnSubmitDrawingListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }

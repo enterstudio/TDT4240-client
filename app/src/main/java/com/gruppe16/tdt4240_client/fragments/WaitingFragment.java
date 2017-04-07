@@ -16,11 +16,10 @@ import java.util.TimerTask;
 
 public class WaitingFragment extends Fragment implements Response.Listener<JSONObject> {
 
-    private String gamePin;
+    private Timer gameStartPollTimer;
 
-    public WaitingFragment() {
-        // Required empty public constructor
-    }
+    // Required empty public constructor
+    public WaitingFragment() {}
 
     public static WaitingFragment newInstance() {
         return new WaitingFragment();
@@ -35,18 +34,17 @@ public class WaitingFragment extends Fragment implements Response.Listener<JSONO
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_waiting, container, false);
-        gamePin = this.getArguments().getString("gamePin");
         setPollingForGameStart();
         return rootView;
     }
 
     private void setPollingForGameStart(){
-        Timer gameStartPollTimer = new Timer();
+        gameStartPollTimer = new Timer();
         final Response.Listener<JSONObject> listener = this;
         gameStartPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForGame(gamePin, listener);
+                NetworkAbstraction.getInstance(getContext()).pollForGame(listener);
             }
         }, 0, 1000);
     }
@@ -57,10 +55,9 @@ public class WaitingFragment extends Fragment implements Response.Listener<JSONO
         System.out.println(response);
         try{
             boolean isStarted = (boolean) response.get("isStarted");
-            String gamePin = (String) response.get("gamePin");
-            String playerID = (String) response.get("playerID");
             if (isStarted){
-                FragmentChanger.goToDrawView(getActivity(), gamePin, playerID);
+                gameStartPollTimer.cancel();
+                FragmentChanger.goToDrawView(getActivity());
             }
         }
         catch (Exception e){

@@ -25,24 +25,23 @@
                 android:id="@+id/drawWord"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Banana"
                 android:textAlignment="center"
                 android:textSize="@dimen/text_large"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/guessWord"
-                android:textAlignment="center"
-                android:hint="guess word..."
                 android:layout_width="match_parent"
-                android:layout_gravity="center"
                 android:layout_height="match_parent"
-                android:textSize="30dp"
+                android:layout_gravity="center"
                 android:ems="10"
                 android:fontFamily="casual"
+                android:hint="guess word..."
+                android:textAlignment="center"
                 android:textColor="@color/textEditColor"
+                android:textSize="30dp"
                 android:theme="@style/EditText"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -51,20 +50,20 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
-            android:orientation="vertical"
-            android:background="#ffffff">
+            android:background="#ffffff"
+            android:orientation="vertical">
 
             <com.gruppe16.tdt4240_client.DrawingView
                 android:id="@+id/drawingView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/imageReceived"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
 
 
@@ -72,42 +71,29 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <ImageButton
-                android:layout_gravity="center_vertical"
+                android:id="@+id/actionButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:id="@+id/drawButton"
-                android:src="@drawable/pencil"
-                android:visibility="gone"
-                android:background="@drawable/imagebuttons"
-                android:adjustViewBounds="true"
+                android:layout_gravity="center_vertical"
                 android:layout_marginRight="5dp"
-                android:scaleType="fitCenter"/>
-
-            <ImageButton
-                android:layout_gravity="center_vertical"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:id="@+id/eraseButton"
-                android:src="@drawable/eraser"
-                android:visibility="gone"
-                android:background="@drawable/imagebuttons"
                 android:adjustViewBounds="true"
-                android:layout_marginLeft="5dp"
-                android:scaleType="fitCenter"/>
+                android:background="@drawable/imagebuttons"
+                android:scaleType="fitCenter"
+                android:src="@drawable/pencil"
+                android:visibility="gone" />
+
 
             <Button
-                android:layout_gravity="center_vertical"
+                android:id="@+id/submitButton"
                 android:layout_width="100dp"
                 android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
                 android:background="@drawable/button_bg"
-                android:id="@+id/submitButton"
                 android:text="Submit"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
         </LinearLayout>
     </LinearLayout>
