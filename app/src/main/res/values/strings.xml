@@ -7,4 +7,9 @@
     <string name="players">Players</string>
     <string name="pt">pt</string>
     <string name="round">Round</string>
+    <string name="pin">PIN:</string>
+    <string name="players_connected">Players connected:</string>
+    <string name="seconds_left">Seconds left</string>
+    <string name="semicolon">:</string>
+
 </resources>

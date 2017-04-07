@@ -139,7 +139,7 @@ public class SlideShowFragment extends Fragment {
                 }
             }
         };
-        NetworkAbstraction.getInstance(getContext()).pollForGame(gamePin, gameListener);
+        NetworkAbstraction.getInstance(getContext()).pollForGame(gameListener);
     }
 
     /**
@@ -159,7 +159,7 @@ public class SlideShowFragment extends Fragment {
                 }
             }
         };
-        NetworkAbstraction.getInstance(getContext()).getDrawing(drawingId, drawingListener);
+        NetworkAbstraction.getInstance(getContext()).getDrawing(drawingListener);
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {

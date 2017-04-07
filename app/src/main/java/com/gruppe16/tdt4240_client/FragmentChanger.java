@@ -1,27 +1,17 @@
 package com.gruppe16.tdt4240_client;
 
-import android.content.Context;
-import android.graphics.Paint;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-
 import com.gruppe16.tdt4240_client.fragments.CreateGameFragment;
 import com.gruppe16.tdt4240_client.fragments.DrawFragment;
 import com.gruppe16.tdt4240_client.fragments.ExitFragment;
 import com.gruppe16.tdt4240_client.fragments.GuessFragment;
 import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
-import com.gruppe16.tdt4240_client.fragments.MenuFragment;
 import com.gruppe16.tdt4240_client.fragments.ScoreboardFragment;
 import com.gruppe16.tdt4240_client.fragments.SlideShowFragment;
 import com.gruppe16.tdt4240_client.fragments.WaitingFragment;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
-
-import static com.gruppe16.tdt4240_client.MainActivity.round;
 
 /**
  * Created by Camilla on 09.03.2017.
@@ -59,11 +49,8 @@ public class FragmentChanger {
                 .commit();
     }
 
-    public static void goToWaitingView(FragmentActivity activity, String gamePin) {
+    public static void goToWaitingView(FragmentActivity activity) {
         WaitingFragment fragment = WaitingFragment.newInstance();
-        Bundle args = new Bundle();
-        args.putString("gamePin", gamePin);
-        fragment.setArguments(args);
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()
@@ -71,14 +58,8 @@ public class FragmentChanger {
                 .commit();
     }
 
-    public static void goToDrawView(FragmentActivity activity, String gamePin, String playerID){
-        round++;
-        System.out.println("Current round: " + round);
+    public static void goToDrawView(FragmentActivity activity){
         DrawFragment fragment = DrawFragment.newInstance();
-        Bundle args = new Bundle();
-        args.putString("gamePin", gamePin);
-        args.putString("playerID", playerID);
-        fragment.setArguments(args);
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()
@@ -87,8 +68,6 @@ public class FragmentChanger {
     }
 
     public static void goToGuessView(FragmentActivity activity){
-        round++;
-        System.out.println("Current round: " + round);
         GuessFragment fragment = GuessFragment.newInstance();
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
@@ -99,10 +78,6 @@ public class FragmentChanger {
 
     public static void goToScoreboardView(String myPlayerId, String gamePin, FragmentActivity activity){
         ScoreboardFragment fragment = ScoreboardFragment.newInstance();
-        Bundle args = new Bundle();
-        args.putString("myPlayerId", myPlayerId);
-        args.putString("gamePin", gamePin);
-        fragment.setArguments(args);
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()
@@ -112,11 +87,6 @@ public class FragmentChanger {
 
     public static void goToExitView(String myPlayerId, String gamePin, ArrayList<Integer> indexOfWinners, FragmentActivity activity){
         ExitFragment fragment = ExitFragment.newInstance();
-        Bundle args = new Bundle();
-        args.putString("myPlayerId", myPlayerId);
-        args.putString("gamePin", gamePin);
-        args.putIntegerArrayList("winners", indexOfWinners);
-        fragment.setArguments(args);
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()

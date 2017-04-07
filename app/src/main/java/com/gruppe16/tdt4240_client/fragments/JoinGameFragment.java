@@ -1,7 +1,5 @@
 package com.gruppe16.tdt4240_client.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,19 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
+import com.android.volley.Response;
 import com.gruppe16.tdt4240_client.FragmentChanger;
+import com.gruppe16.tdt4240_client.GameState;
+import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
 
-public class JoinGameFragment extends Fragment {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class JoinGameFragment extends Fragment implements Response.Listener<JSONObject> {
 
     private Button joinGameButton;
     private EditText gamePinInput;
-    private JoinGameByPinListener mListener;
+    private GameState gameState;
 
-    public JoinGameFragment() {
-        // Required empty public constructor
-    }
+    // Required empty public constructor
+    public JoinGameFragment() {}
 
     public static JoinGameFragment newInstance() {
         JoinGameFragment fragment = new JoinGameFragment();
@@ -36,8 +38,7 @@ public class JoinGameFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_join_game, container, false);
         gamePinInput = (EditText) rootView.findViewById(R.id.gamePinInput);
         joinGameButton = (Button) rootView.findViewById(R.id.joinGameBtn);
@@ -47,35 +48,27 @@ public class JoinGameFragment extends Fragment {
                 onButtonPressed();
             }
         });
-
+        gameState = GameState.getInstance();
         return rootView;
     }
 
     public void onButtonPressed() {
-        if (mListener != null) {
-            mListener.onJoinGame(gamePinInput.getText().toString());
-        }
-        FragmentChanger.goToWaitingView(getActivity(), gamePinInput.getText().toString());
+        String gamePin = gamePinInput.getText().toString();
+        gameState.setGamePin(gamePin);
+        Response.Listener<JSONObject> listener = this;
+        NetworkAbstraction.getInstance(getContext()).joinGame(listener);
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof JoinGameByPinListener) {
-            mListener = (JoinGameByPinListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement JoinGameByPinListener");
+    public void onResponse(JSONObject response) {
+        try {
+            String myPlayerId = response.getString("myPlayerId");
+            gameState.setMyPlayerId(myPlayerId);
+            FragmentChanger.goToWaitingView(getActivity());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface JoinGameByPinListener {
-        void onJoinGame(String gamePin);
-    }
 }

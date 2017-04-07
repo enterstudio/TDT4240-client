@@ -97,7 +97,7 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
         gameStartPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForGame(gamePin, listener);
+                NetworkAbstraction.getInstance(getContext()).pollForGame(listener);
             }
         }, 0, 1000);
     }
