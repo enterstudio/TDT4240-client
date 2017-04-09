@@ -13,7 +13,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.android.volley.Response;
-import com.gruppe16.tdt4240_client.FragmentChanger;
+import com.gruppe16.tdt4240_client.GameState;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
 import org.json.JSONArray;
@@ -31,8 +31,6 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
     private Button exitButton;
     private TableLayout tableLayout;
 
-    private String gamePin;
-    private String myPlayerId;
     private JSONArray scoreArray;
 
     // Required empty public constructor
@@ -56,8 +54,9 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
         TextView playerNumberTextView = (TextView) rootView.findViewById(R.id.playerNumberTextView);
         tableLayout = (TableLayout) rootView.findViewById(R.id.scoreboard);
 
-        gamePin = this.getArguments().getString("gamePin");
-        myPlayerId = this.getArguments().getString("myPlayerId");
+
+        String myPlayerId = GameState.getInstance().getMyPlayerId();
+
         playerNumberTextView.setText(getString(R.string.player) + " " + myPlayerId);
 
         exitButton = (Button) rootView.findViewById(R.id.exitButton);
@@ -85,7 +84,7 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
 
         roundNumberTextView.setText(getString(R.string.round));
 
-        setPollingForGameStart();
+        //setPollingForGameStart();
 
         return rootView;
     }
@@ -106,6 +105,7 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
     @Override
     public void onResponse(JSONObject response) {
         try {
+
             JSONObject game = response.getJSONObject("game");
 
             String round = game.getString("round");
@@ -171,7 +171,7 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
         switch (v.getId()){
             case R.id.exitButton:
                 ArrayList<Integer> winners = findIndexOfWinners();
-                FragmentChanger.goToExitView(myPlayerId, gamePin, winners, getActivity());
+                //FragmentChanger.goToExitView(myPlayerId, gamePin, winners, getActivity());
                 break;
             case R.id.playAnotherRoundButton:
                 AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();

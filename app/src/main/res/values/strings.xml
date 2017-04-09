@@ -11,5 +11,8 @@
     <string name="players_connected">Players connected:</string>
     <string name="seconds_left">Seconds left</string>
     <string name="semicolon">:</string>
+    <string name="initialWord">Initial word</string>
+    <string name="drew">drew</string>
+    <string name="guessed">guessed</string>
 
 </resources>

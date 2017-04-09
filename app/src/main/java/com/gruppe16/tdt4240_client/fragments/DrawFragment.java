@@ -1,7 +1,7 @@
 package com.gruppe16.tdt4240_client.fragments;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -14,29 +14,94 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.gruppe16.tdt4240_client.DrawingView;
-import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.GameState;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
 import com.gruppe16.tdt4240_client.actions.ActionContext;
+import com.gruppe16.tdt4240_client.interfaces.OnGoToView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DrawFragment extends Fragment {
 
     private DrawingView drawingView;
     private TextView timeLeftTextView;
     private TextView drawWord;
-    private OnSubmitDrawingListener mListener;
     private ImageButton imageButton;
     private GameState gameState;
+    private Timer gamePollingTimer;
+    private Bitmap finishedDrawing;
+    private OnGoToView onGoToView;
+    private boolean drawingSubmitted = false;
 
-    public Bitmap finishedDrawing;
+    private Response.ErrorListener submitDrawingErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            drawingSubmitted = false;
+            error.printStackTrace();
+        }
+    };
+
+    private Response.Listener<JSONObject> gamePollListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            if (isAdded()) {
+                try {
+                    countDownTimer.start();
+                    if (gameState.getRound() == 0) {
+                        gamePollingTimer.cancel();
+                        JSONArray initialWords = response.getJSONArray("initialWords");
+                        int id = Integer.parseInt(gameState.getMyPlayerId());
+                        drawWord.setText(initialWords.get(id) + "");
+                    } else {
+
+                        int id = Integer.parseInt(GameState.getInstance().getMyPlayerId());
+                        int round = GameState.getInstance().getRound();
+                        int numberOfPlayers = GameState.getInstance().getNumberOfPlayers();
+                        int nextGuessBlockIndex = (id + round) % numberOfPlayers;
+                        // We want to show the previous drawing
+                        int previousDepth = GameState.getInstance().getGuessBlockDepth() - 1;
+
+                        if (!(response.getJSONArray("guessBlocks").getJSONArray(nextGuessBlockIndex).getJSONObject(previousDepth).getString("guess").equals("null"))) {
+                            gamePollingTimer.cancel();
+                            String guessWord = response.getJSONArray("guessBlocks").getJSONArray(nextGuessBlockIndex).getJSONObject(previousDepth).getString("guess");
+                            drawWord.setText(guessWord + "");
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    private Response.Listener<JSONObject> submitDrawingListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            if(isAdded()) {
+                try {
+                    if (response.getString("status").equals("success")) {
+                        GameState.getInstance().setRound(GameState.getInstance().getRound() + 1);
+                        GameState.getInstance().setGuessBlockDepth(GameState.getInstance().getGuessBlockDepth() + 1);
+                        onGoToView.goToGuessView();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    private CountDownTimer countDownTimer;
 
 
     // Required empty public constructor
@@ -84,10 +149,7 @@ public class DrawFragment extends Fragment {
             }
         });
 
-        pollForGame();
-
-        //The countdown timer
-        new CountDownTimer(5000, 1000) {
+        countDownTimer = new CountDownTimer(1000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timeLeftTextView.setText(getString(R.string.seconds_left) + getString(R.string.semicolon) + " " + millisUntilFinished / 1000);
             }
@@ -102,70 +164,44 @@ public class DrawFragment extends Fragment {
                 String imageString = Base64.encodeToString(byte_arr, Base64.DEFAULT);
 
                 // Update the game state with the compressed image string
-                GameState.getInstance().setImageString(imageString);
+                gameState.setImageString(imageString);
 
-                NetworkAbstraction.getInstance(getContext()).submitDrawing(new Response.Listener<JSONObject>(){
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            if (response.getString("status").equals("success")){
-                                gameState.setRound(gameState.getRound() + 1);
-                                FragmentChanger.goToGuessView(getActivity());
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                if (!drawingSubmitted) {
+                    drawingSubmitted = true;
+                    NetworkAbstraction.getInstance(getContext()).submitDrawing(submitDrawingListener, submitDrawingErrorListener);
+                }
+
             }
-        }.start();
+        };
+
+        pollForGame();
 
         return rootView;
     }
 
     private void pollForGame(){
-        NetworkAbstraction.getInstance(getActivity()).pollForGame(new Response.Listener<JSONObject>() {
+        System.out.println("Polling for game...");
+        gamePollingTimer = new Timer();
+        gamePollingTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    if (gameState.getRound() == 0){
-                        JSONArray initialWords = response.getJSONArray("initialWords");
-                        int id = Integer.parseInt(gameState.getMyPlayerId());
-                        drawWord.setText(initialWords.get(id) + "");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void run() {
+                NetworkAbstraction.getInstance(getContext()).pollForGame(gamePollListener);
             }
-        });
-    }
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        }, 0, 1000);
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            onGoToView = (OnGoToView) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnGoToView");
+        }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    interface OnSubmitDrawingListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

@@ -1,5 +1,6 @@
 package com.gruppe16.tdt4240_client.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,16 +10,16 @@ import android.widget.Button;
 
 import com.gruppe16.tdt4240_client.R;
 import com.gruppe16.tdt4240_client.FragmentChanger;
+import com.gruppe16.tdt4240_client.interfaces.OnGoToView;
 
 
 public class FinishedFragment extends Fragment {
 
     private Button startSlideshowButton;
+    private OnGoToView onGoToView;
 
-
-    public FinishedFragment() {
-        // Required empty public constructor
-    }
+    // Required empty public constructor
+    public FinishedFragment() {}
 
     public static FinishedFragment newInstance() {
         FinishedFragment fragment = new FinishedFragment();
@@ -32,8 +33,7 @@ public class FinishedFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_finishedfragment, container, false);
         startSlideshowButton = (Button) rootView.findViewById(R.id.startSlideshowButton);
@@ -41,11 +41,27 @@ public class FinishedFragment extends Fragment {
         startSlideshowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentChanger.goToSlideshowView(getActivity());
+                onGoToView.goToSlideShowView();
             }
-
-
-    });
+        });
         return rootView;
-    }}
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            onGoToView = (OnGoToView) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnGoToView");
+        }
+    }
+
+}
+
+
 

@@ -6,4 +6,5 @@
     <color name="colorAccent">#6FD005</color>
     <color name="textEditColor">#ffffff</color>
     <color name="imageButtonColor">#ff6f00</color>
+    <color name="scrollBarColor">#fffb00</color>
 </resources>
