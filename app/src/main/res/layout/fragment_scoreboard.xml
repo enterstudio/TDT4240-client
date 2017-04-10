@@ -7,12 +7,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:weightSum="8"
         android:orientation="vertical">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.55"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
@@ -29,51 +31,61 @@
                 android:textAlignment="center"
                 android:textSize="40dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/PlayerHeader"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:text="Players"
-                    android:textAlignment="textStart"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/ScoreHeader"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:text="Score"
-                    android:textAlignment="textEnd"
-                    android:textSize="20dp" />
-            </LinearLayout>
 
         </LinearLayout>
 
-
-        <TableLayout
-            android:id="@+id/scoreboard"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.38"
-            android:dividerHeight="1dp"
-            android:stretchColumns="1">
+            android:layout_weight="0.5">
 
-        </TableLayout>
+            <TextView
+                android:id="@+id/ScoreHeader"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:text="@string/score"
+                android:textAlignment="textEnd"
+                android:textSize="20sp" />
 
+            <TextView
+                android:id="@+id/PlayerHeader"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:text="@string/players"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5.5"
+            android:orientation="vertical" >
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableLayout
+                    android:id="@+id/scoreboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:dividerHeight="1dp"
+                    android:stretchColumns="1">
+
+                </TableLayout>
+            </ScrollView>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.36"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <Button
@@ -82,6 +94,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom|left"
                 android:layout_weight="1"
+                android:clickable="false"
                 android:text="Play another round" />
 
 
@@ -91,11 +104,12 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom|right"
                 android:layout_weight="1"
+                android:clickable="false"
                 android:text="Exit" />
 
         </LinearLayout>
 
-
     </LinearLayout>
+
 
 </FrameLayout>

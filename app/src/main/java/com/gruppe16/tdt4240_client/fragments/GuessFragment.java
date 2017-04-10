@@ -65,8 +65,6 @@ public class GuessFragment extends Fragment {
 
                     imageView.setImageBitmap(decodedByte);
 
-                    System.out.println("Round: " + GameState.getInstance().getRound());
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -104,8 +102,6 @@ public class GuessFragment extends Fragment {
         public void onResponse(JSONObject response) {
             if (isAdded()) {
                 try {
-
-                    System.out.println("Status: " + response.getString("status"));
                     String status = response.getString("status");
                     if (status.equals("success")) {
                         if (GameState.getInstance().getRound() >= GameState.getInstance().getNumberOfPlayers() - 1) {
@@ -123,8 +119,7 @@ public class GuessFragment extends Fragment {
     };
 
     // Required empty public constructor
-    public GuessFragment() {
-    }
+    public GuessFragment() {}
 
     public static GuessFragment newInstance() {
         GuessFragment fragment = new GuessFragment();
@@ -209,7 +204,6 @@ public class GuessFragment extends Fragment {
     }
 
     private void pollForGame() {
-        System.out.println("Polling for game...");
         GamePollingTimer = new Timer();
         GamePollingTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -220,9 +214,8 @@ public class GuessFragment extends Fragment {
     }
 
     private void sendGuess() {
-        System.out.println("Sending word...");
         String guessWord = guess.getText().toString();
-        if (guessWord.isEmpty()) guessWord = guessWord + "Ingen svar gitt";
+        if (guessWord.isEmpty()) guessWord = guessWord + getString(R.string.no_answer);
         GameState.getInstance().setGuessWord(guessWord);
         if (!guessSubmitted) {
             guessSubmitted = true;

@@ -28,17 +28,16 @@ public class JoinGameFragment extends Fragment {
         @Override
         public void onResponse(JSONObject response) {
             if(isAdded()){
-                if(isAdded()) {
-                    try {
-                        String myPlayerId = response.getString("myPlayerId");
-                        gameState.setMyPlayerId(myPlayerId);
-                        onGoToView.goToWaitingView();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    String myPlayerId = response.getString("myPlayerId");
+                    gameState.setMyPlayerId(myPlayerId);
+                    onGoToView.goToWaitingView();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }
+
     };
 
     // Required empty public constructor

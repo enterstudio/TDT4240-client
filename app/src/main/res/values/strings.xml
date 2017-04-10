@@ -5,6 +5,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="player">Player</string>
     <string name="players">Players</string>
+    <string name="score">Score</string>
     <string name="pt">pt</string>
     <string name="round">Round</string>
     <string name="pin">PIN:</string>
@@ -14,5 +15,8 @@
     <string name="initialWord">Initial word</string>
     <string name="drew">drew</string>
     <string name="guessed">guessed</string>
+    <string name="no_answer">No answer</string>
+    <string name="won_the_game">won the game!</string>
+    <string name="main_menu">main menu</string>
 
 </resources>

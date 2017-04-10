@@ -108,8 +108,6 @@ public class SlideShowFragment extends Fragment {
         public void onResponse(JSONObject response) {
             if(isAdded()) {
                 try {
-                    System.out.println("Poll for drawing response: ");
-                    System.out.println(response.toString(2));
 
                     JSONObject image = response.getJSONObject("image");
                     String encodedImage = image.getString("file");

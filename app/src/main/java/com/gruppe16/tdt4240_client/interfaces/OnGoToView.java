@@ -13,4 +13,6 @@ public interface OnGoToView {
     void goToFinishedView();
     void goToSlideShowView();
     void goToScoreboardView();
+    void goToExitView();
+    void goToMainMenu();
 }

@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity implements OnGoToView {
 
     public void initializeStartFragment(){
         MenuFragment fragment = MenuFragment.newInstance();
-        //DrawFragment fragment = DrawFragment.newInstance();
         FragmentManager fm = getSupportFragmentManager();
         fm
                 .beginTransaction()
@@ -62,10 +61,18 @@ public class MainActivity extends AppCompatActivity implements OnGoToView {
     }
 
     @Override
+    public void goToExitView() {
+        FragmentChanger.goToExitView(this);
+    }
+
+    @Override
     public void goToCreateGameView() {
         FragmentChanger.goToCreateGameView(this);
     }
 
-
+    @Override
+    public void goToMainMenu() {
+        FragmentChanger.goToMainMenuView(this);
+    }
 
 }

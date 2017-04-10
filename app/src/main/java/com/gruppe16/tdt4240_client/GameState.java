@@ -2,6 +2,7 @@ package com.gruppe16.tdt4240_client;
 
 import android.app.Application;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ public class GameState extends Application {
     private int round = 0;
     private int guessBlockDepth = 0;
     private Map<String, Integer> scores = new HashMap<>();
+    private ArrayList<Integer> winners;
 
     private GameState(){}
 
@@ -106,5 +108,14 @@ public class GameState extends Application {
     public void setGuessBlockDepth(int guessBlockDepth) {
         this.guessBlockDepth = guessBlockDepth;
     }
+
+    public ArrayList<Integer> getWinners() {
+        return winners;
+    }
+
+    public void setWinners(ArrayList<Integer> winners) {
+        this.winners = winners;
+    }
+
 
 }
