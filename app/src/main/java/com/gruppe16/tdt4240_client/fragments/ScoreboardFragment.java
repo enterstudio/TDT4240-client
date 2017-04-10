@@ -1,5 +1,6 @@
 package com.gruppe16.tdt4240_client.fragments;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,9 +14,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.android.volley.Response;
-import com.gruppe16.tdt4240_client.FragmentChanger;
+import com.gruppe16.tdt4240_client.GameState;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
+import com.gruppe16.tdt4240_client.interfaces.OnGoToView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,10 +32,10 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
     private Button playAnotherRoundButton;
     private Button exitButton;
     private TableLayout tableLayout;
-
-    private String gamePin;
-    private String myPlayerId;
+    private OnGoToView onGoToView;
     private JSONArray scoreArray;
+    private JSONArray oldScoreArray;
+    private Timer gameStartPollTimer;
 
     // Required empty public constructor
     public ScoreboardFragment() {}
@@ -56,24 +58,22 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
         TextView playerNumberTextView = (TextView) rootView.findViewById(R.id.playerNumberTextView);
         tableLayout = (TableLayout) rootView.findViewById(R.id.scoreboard);
 
-        gamePin = this.getArguments().getString("gamePin");
-        myPlayerId = this.getArguments().getString("myPlayerId");
+
+        String myPlayerId = GameState.getInstance().getMyPlayerId();
+
         playerNumberTextView.setText(getString(R.string.player) + " " + myPlayerId);
 
         exitButton = (Button) rootView.findViewById(R.id.exitButton);
+        exitButton.setEnabled(false);
         exitButton.setClickable(false);
-        if (myPlayerId.equals("0")) {
-            exitButton.setAlpha(0.3f);
-            exitButton.setOnClickListener(this);
-            exitButton.setVisibility(View.VISIBLE);
-        }
-        else {
-            exitButton.setVisibility(View.INVISIBLE);
-        }
-
+        exitButton.setAlpha(0.3f);
+        exitButton.setOnClickListener(this);
+        exitButton.setVisibility(View.VISIBLE);
 
         playAnotherRoundButton = (Button) rootView.findViewById(R.id.playAnotherRoundButton);
         playAnotherRoundButton.setClickable(false);
+        playAnotherRoundButton.setEnabled(false);
+
         if (myPlayerId.equals("0")) {
             playAnotherRoundButton.setAlpha(0.3f);
             playAnotherRoundButton.setOnClickListener(this);
@@ -83,7 +83,14 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
             playAnotherRoundButton.setVisibility(View.INVISIBLE);
         }
 
-        roundNumberTextView.setText(getString(R.string.round));
+        /**
+         * Did not implement functionality to start a new game round
+         * yet, thus no need to display round number
+         */
+        //roundNumberTextView.setText(getString(R.string.round));
+
+
+        oldScoreArray = new JSONArray();
 
         setPollingForGameStart();
 
@@ -92,7 +99,7 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
 
 
     private void setPollingForGameStart(){
-        Timer gameStartPollTimer = new Timer();
+        gameStartPollTimer = new Timer();
         final Response.Listener<JSONObject> listener = this;
         gameStartPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
@@ -106,19 +113,18 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
     @Override
     public void onResponse(JSONObject response) {
         try {
-            JSONObject game = response.getJSONObject("game");
 
-            String round = game.getString("round");
-            roundNumberTextView.setText(getString(R.string.round) + " " + round);
+            // There's no concept of rounds on the server in terms of how it is suppose to be used here
+            //roundNumberTextView.setText(getString(R.string.round) + " " + round);
 
-            boolean isFinished = (boolean) game.get("isFinished");
+            boolean isFinished = response.getBoolean("isFinished");
 
-            scoreArray = game.getJSONArray("scores");
-            JSONArray oldScoreArray = new JSONArray();
+            scoreArray = response.getJSONArray("scores");
 
             // No need to build the tables if no changes happened
-            if (!(oldScoreArray.equals(scoreArray))){
-
+            if (!(scoreArray.equals(oldScoreArray))){
+                oldScoreArray = scoreArray;
+                tableLayout.removeAllViews();
                 for (int i = 0; i < scoreArray.length(); i++){
                     int score = scoreArray.optInt(i);
                     TableRow row = new TableRow(getActivity());
@@ -152,26 +158,39 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
 
             }
 
-            if (isFinished){
+            // For the admin
+            if (isFinished && GameState.getInstance().getMyPlayerId().equals("0")){
+                gameStartPollTimer.cancel();
+                GameState.getInstance().setWinners(findIndexOfWinners());
                 exitButton.setClickable(true);
                 exitButton.setAlpha(1f);
+                exitButton.setEnabled(true);
                 playAnotherRoundButton.setClickable(true);
                 playAnotherRoundButton.setAlpha(1f);
+                playAnotherRoundButton.setEnabled(true);
             }
-
-
+            // For the regular players
+            else if (isFinished){
+                gameStartPollTimer.cancel();
+                GameState.getInstance().setWinners(findIndexOfWinners());
+                exitButton.setClickable(true);
+                exitButton.setEnabled(true);
+                exitButton.setAlpha(1f);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.exitButton:
-                ArrayList<Integer> winners = findIndexOfWinners();
-                FragmentChanger.goToExitView(myPlayerId, gamePin, winners, getActivity());
+                System.out.println("GoToExitView");
+                onGoToView.goToExitView();
                 break;
             case R.id.playAnotherRoundButton:
                 AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
@@ -206,7 +225,18 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
 
     }
 
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            onGoToView = (OnGoToView) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnGoToView");
+        }
+    }
 
 
 }

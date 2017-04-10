@@ -1,7 +1,6 @@
 package com.gruppe16.tdt4240_client.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,17 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.R;
+import com.gruppe16.tdt4240_client.interfaces.OnGoToView;
 
 public class MenuFragment extends Fragment {
 
     private Button createGameButton;
     private Button joinGameButton;
+    private OnGoToView onGoToView;
 
-    public MenuFragment() {
-        // Required empty public constructor
-    }
+    // Required empty public constructor
+    public MenuFragment() {}
 
     public static MenuFragment newInstance() {
         MenuFragment fragment = new MenuFragment();
@@ -32,9 +31,7 @@ public class MenuFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
@@ -44,17 +41,34 @@ public class MenuFragment extends Fragment {
         createGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentChanger.goToCreateGameView(getActivity());
+                onGoToView.goToCreateGameView();
             }
         });
 
         joinGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentChanger.goToJoinGameView(getActivity());
+                onGoToView.goToJoinGameView();
             }
         });
 
         return rootView;
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            onGoToView = (OnGoToView) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnGoToView");
+        }
+    }
+
+
+
 }

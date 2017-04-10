@@ -1,5 +1,6 @@
 package com.gruppe16.tdt4240_client.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,10 +9,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.android.volley.Response;
-import com.gruppe16.tdt4240_client.FragmentChanger;
 import com.gruppe16.tdt4240_client.GameState;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
+import com.gruppe16.tdt4240_client.interfaces.OnGoToView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +28,61 @@ public class CreateGameFragment extends Fragment {
     private Button startGameButton;
     private Timer playerPollTimer;
     private GameState gameState;
+    private OnGoToView onGoToView;
+    private JSONArray players;
+
+    private Response.Listener<JSONObject> isGameStartedListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            if(isAdded()) {
+                try {
+                    if (response.getBoolean("isStarted")) {
+                        GameState.getInstance().setNumberOfPlayers(players.length());
+                        onGoToView.goToDrawView();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    private Response.Listener<JSONObject> pollForGameListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            if(isAdded()) {
+                try {
+                    // Process and display number of players
+                    players = response.getJSONArray("players");
+                    processNumberOfPlayers(players.length());
+                    playersCountTextView.setText(getString(R.string.players_connected) + " " + players.length());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    private Response.Listener<JSONObject> gameCreatedListener = new Response.Listener<JSONObject>(){
+        @Override
+        public void onResponse(JSONObject response) {
+            if (isAdded()) {
+                try {
+                    // Set the myPlayerId in shared preferences
+                    String myPlayerId = "0";
+                    gameState.setMyPlayerId(myPlayerId);
+                    // Set the gamePin
+                    String gamePin = response.getString("gamePin");
+                    gameState.setGamePin(gamePin);
+                    gamePinTextView.setText(getString(R.string.pin) + " " + gamePin);
+                    pollForGame();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
 
     // Required empty public constructor
     public CreateGameFragment() {}
@@ -57,19 +113,7 @@ public class CreateGameFragment extends Fragment {
             @Override
             public void onClick(View v) {
             playerPollTimer.cancel();
-
-            Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        if (response.getBoolean("isStarted"))
-                            FragmentChanger.goToDrawView(getActivity());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            NetworkAbstraction.getInstance(getContext()).startGame(listener);
+            NetworkAbstraction.getInstance(getContext()).startGame(isGameStartedListener);
             }
         });
 
@@ -82,52 +126,17 @@ public class CreateGameFragment extends Fragment {
     }
 
     private void createGame(){
-        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>(){
-            @Override
-            public void onResponse(JSONObject response) {
-            try {
-                // Set the myPlayerId in shared preferences
-                String myPlayerId = "0";
-                gameState.setMyPlayerId(myPlayerId);
-                // Set the gamePin
-                String gamePin = response.getString("gamePin");
-                gameState.setGamePin(gamePin);
-                gamePinTextView.setText(getString(R.string.pin) + " " + gamePin);
-                pollForGame();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            }
-        };
         /* Request new gamePin from server */
-        NetworkAbstraction.getInstance(getContext()).createGame(listener);
+        NetworkAbstraction.getInstance(getContext()).createGame(gameCreatedListener);
     }
 
     private void pollForGame(){
         System.out.println("Polling for game...");
         playerPollTimer = new Timer();
-        final Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-            try{
-                System.out.println("Repsonse: " + response);
-                // Process and display number of players
-                JSONArray players = response.getJSONArray("players");
-                processNumberOfPlayers(players.length());
-                playersCountTextView.setText(getString(R.string.players_connected) + " " + players.length());
-
-            } catch (JSONException e){
-                e.printStackTrace();
-            }
-            }
-        };
-
         playerPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForGame(listener);
+                NetworkAbstraction.getInstance(getContext()).pollForGame(pollForGameListener);
             }
         }, 0, 1000);
     }
@@ -144,5 +153,20 @@ public class CreateGameFragment extends Fragment {
         }
 
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            onGoToView = (OnGoToView) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnGoToView");
+        }
+    }
+
 
 }

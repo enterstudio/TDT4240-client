@@ -1,22 +1,45 @@
 package com.gruppe16.tdt4240_client.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.android.volley.Response;
-import com.gruppe16.tdt4240_client.FragmentChanger;
+import com.gruppe16.tdt4240_client.GameState;
 import com.gruppe16.tdt4240_client.NetworkAbstraction;
 import com.gruppe16.tdt4240_client.R;
+import com.gruppe16.tdt4240_client.interfaces.OnGoToView;
 import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class WaitingFragment extends Fragment implements Response.Listener<JSONObject> {
+public class WaitingFragment extends Fragment {
 
     private Timer gameStartPollTimer;
+    private OnGoToView onGoToView;
+
+    private Response.Listener<JSONObject> pollForGameListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            if (isAdded()){
+                try{
+                    boolean isStarted = (boolean) response.get("isStarted");
+                    if (isStarted){
+                        gameStartPollTimer.cancel();
+                        int numberOfPlayers = response.getJSONArray("players").length();
+                        GameState.getInstance().setNumberOfPlayers(numberOfPlayers);
+                        onGoToView.goToDrawView();
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
 
     // Required empty public constructor
     public WaitingFragment() {}
@@ -40,28 +63,25 @@ public class WaitingFragment extends Fragment implements Response.Listener<JSONO
 
     private void setPollingForGameStart(){
         gameStartPollTimer = new Timer();
-        final Response.Listener<JSONObject> listener = this;
         gameStartPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForGame(listener);
+                NetworkAbstraction.getInstance(getContext()).pollForGame(pollForGameListener);
             }
         }, 0, 1000);
     }
 
-
     @Override
-    public void onResponse(JSONObject response) {
-        System.out.println(response);
-        try{
-            boolean isStarted = (boolean) response.get("isStarted");
-            if (isStarted){
-                gameStartPollTimer.cancel();
-                FragmentChanger.goToDrawView(getActivity());
-            }
-        }
-        catch (Exception e){
-            e.printStackTrace();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            onGoToView = (OnGoToView) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnGoToView");
         }
     }
 

@@ -5,8 +5,10 @@ import android.support.v4.app.FragmentManager;
 import com.gruppe16.tdt4240_client.fragments.CreateGameFragment;
 import com.gruppe16.tdt4240_client.fragments.DrawFragment;
 import com.gruppe16.tdt4240_client.fragments.ExitFragment;
+import com.gruppe16.tdt4240_client.fragments.FinishedFragment;
 import com.gruppe16.tdt4240_client.fragments.GuessFragment;
 import com.gruppe16.tdt4240_client.fragments.JoinGameFragment;
+import com.gruppe16.tdt4240_client.fragments.MenuFragment;
 import com.gruppe16.tdt4240_client.fragments.ScoreboardFragment;
 import com.gruppe16.tdt4240_client.fragments.SlideShowFragment;
 import com.gruppe16.tdt4240_client.fragments.WaitingFragment;
@@ -18,6 +20,16 @@ import java.util.ArrayList;
  */
 
 public class FragmentChanger {
+
+    public static void goToMainMenuView(FragmentActivity activity){
+        MenuFragment fragment = MenuFragment.newInstance();
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fm
+                .beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.container, fragment)
+                .commit();
+    }
 
     public static void goToCreateGameView(FragmentActivity activity) {
         CreateGameFragment fragment = CreateGameFragment.newInstance();
@@ -76,7 +88,7 @@ public class FragmentChanger {
                 .commit();
     }
 
-    public static void goToScoreboardView(String myPlayerId, String gamePin, FragmentActivity activity){
+    public static void goToScoreboardView(FragmentActivity activity){
         ScoreboardFragment fragment = ScoreboardFragment.newInstance();
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
@@ -85,8 +97,17 @@ public class FragmentChanger {
                 .commit();
     }
 
-    public static void goToExitView(String myPlayerId, String gamePin, ArrayList<Integer> indexOfWinners, FragmentActivity activity){
+    public static void goToExitView(FragmentActivity activity){
         ExitFragment fragment = ExitFragment.newInstance();
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fm
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+    }
+
+    public static void goToFinishedView(FragmentActivity activity){
+        FinishedFragment fragment = FinishedFragment.newInstance();
         FragmentManager fm = activity.getSupportFragmentManager();
         fm
                 .beginTransaction()

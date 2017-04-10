@@ -1,8 +1,5 @@
 package com.gruppe16.tdt4240_client;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.util.Base64;
-
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -13,12 +10,10 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Map;
-
 
 /**
  * Created by Sigurd on 09.03.2017.
@@ -32,11 +27,9 @@ public class NetworkAbstraction {
 
     private String url = "http://10.0.2.2:8000";
     private String gameUrl = url + "/game";
-    private String userUrl = url + "/user";
     private String guessUrl = url + "/guess";
     private String drawingUrl = url + "/drawing";
     private String scoreUrl = url + "/score";
-    private String startGameUrl = url + "/game/";
     private RequestQueue requestQueue;
     private NetworkErrorHandler errorListener = new NetworkErrorHandler();
 
@@ -82,7 +75,7 @@ public class NetworkAbstraction {
     }
 
 
-    public void submitDrawing(Response.Listener<JSONObject> responseHandler){
+    public void submitDrawing(Response.Listener<JSONObject> responseHandler, Response.ErrorListener customErrorListener){
         GameState gameState = GameState.getInstance();
         JSONObject jsonParams = new JSONObject();
         try {
@@ -91,7 +84,7 @@ public class NetworkAbstraction {
             jsonParams.put("playerId", gameState.getMyPlayerId());
             jsonParams.put("round", gameState.getRound());
 
-            Request<JSONObject> request = new JsonObjectRequest(POST, drawingUrl, jsonParams, responseHandler, errorListener);
+            Request<JSONObject> request = new JsonObjectRequest(POST, drawingUrl, jsonParams, responseHandler, customErrorListener);
             requestQueue.add(request);
             
         }
@@ -101,33 +94,22 @@ public class NetworkAbstraction {
     }
 
 
-    public void submitGuess(Response.Listener<JSONObject> responseHandler){
-        /*
+    public void submitGuess(Response.Listener<JSONObject> responseHandler, Response.ErrorListener customErrorListener){
         GameState gameState = GameState.getInstance();
         JSONObject jsonParams = new JSONObject();
         try {
-            jsonParams.put("guess", guess);
+            jsonParams.put("guess", gameState.getGuessWord());
             jsonParams.put("gamePin", gameState.getGamePin());
             jsonParams.put("playerId", gameState.getMyPlayerId());
             jsonParams.put("round", gameState.getRound());
 
-            Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, jsonParams, responseHandler, errorListener);
+            Request<JSONObject> request = new JsonObjectRequest(POST, guessUrl, jsonParams, responseHandler, customErrorListener);
             requestQueue.add(request);
 
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        */
-    }
-
-    public void getPage(Response.Listener<JSONObject> responseHandler){
-        GameState gameState = GameState.getInstance();
-        String url = gameUrl + "/" + gameState.getGamePin() + "?player=" + gameState.getMyPlayerId() + "&round=" + gameState.getRound();
-        Request<JSONObject> request = new JsonObjectRequest(GET, url, null, responseHandler, errorListener);
-        requestQueue.add(request);
-
-        //String url2 = String.format("%s/%s?player=%s&round=%n", gameUrl, gamePin, myPlayerId, roundCounter);
     }
 
     public void getDrawing(Response.Listener<JSONObject> responseHandler){
@@ -136,22 +118,18 @@ public class NetworkAbstraction {
         requestQueue.add(request);
     }
 
-    public void submitScore(Map<String, Integer> map, Response.Listener<JSONObject> listener){
+    public void submitScore(Response.Listener<JSONObject> listener){
+        JSONObject jsonMap = new JSONObject(GameState.getInstance().getScores());
         JSONObject jsonParams = new JSONObject();
         try {
-            for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                String key = entry.getKey();
-                int value = entry.getValue();
-                jsonParams.put(key, value);
-            }
-            Request<JSONObject> request = new JsonObjectRequest(POST, scoreUrl, jsonParams, listener, errorListener);
-            requestQueue.add(request);
-        } catch (Exception e) {
+            jsonParams.put("gamePin", GameState.getInstance().getGamePin());
+            jsonParams.put("scores", jsonMap);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+        Request<JSONObject> request = new JsonObjectRequest(POST, scoreUrl, jsonParams, listener, errorListener);
+        requestQueue.add(request);
     }
 
-    public void getGuess(){
-        //TODO: implement
-    }
+
 }

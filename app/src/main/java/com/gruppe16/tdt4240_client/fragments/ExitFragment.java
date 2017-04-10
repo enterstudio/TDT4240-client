@@ -6,14 +6,30 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.gruppe16.tdt4240_client.GameState;
 import com.gruppe16.tdt4240_client.R;
+import com.gruppe16.tdt4240_client.interfaces.OnGoToView;
 
 import java.util.ArrayList;
 
 
 public class ExitFragment extends Fragment {
+
+    private OnGoToView onGoToView;
+
+    private Button.OnClickListener mainMenuButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // Update the variables that won't be updated
+            // just by playing the game
+            GameState.getInstance().setRound(0);
+            GameState.getInstance().setGuessBlockDepth(0);
+            onGoToView.goToMainMenu();
+        }
+    };
 
     // Required empty public constructor
     public ExitFragment() {}
@@ -30,12 +46,13 @@ public class ExitFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_exit, container, false);
         TextView playerWonTextView = (TextView) rootView.findViewById(R.id.playerWonTextView);
+        Button button = (Button) rootView.findViewById(R.id.main_menu_button);
 
-        ArrayList<Integer> winners = this.getArguments().getIntegerArrayList("winners");
+        ArrayList<Integer> winners = GameState.getInstance().getWinners();
 
         assert winners != null;
         if (winners.size() == 0){
-            playerWonTextView.setText(getString(R.string.player) + " " + winners.get(0) + "has won!");
+            playerWonTextView.setText(getString(R.string.player) + " " + winners.get(0) + " " + getString(R.string.won_the_game));
         }
         else {
             String winnerText = "";
@@ -43,8 +60,10 @@ public class ExitFragment extends Fragment {
                 winnerText += winner + ", ";
             }
             winnerText = winnerText.replaceAll(", $", "");
-            playerWonTextView.setText(getString(R.string.players) + " " + winnerText + " has won!");
+            playerWonTextView.setText(getString(R.string.players) + " " + winnerText + " " + getString(R.string.won_the_game));
         }
+
+        button.setOnClickListener(mainMenuButtonListener);
 
         return rootView;
     }
@@ -54,11 +73,15 @@ public class ExitFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            onGoToView = (OnGoToView) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnGoToView");
+        }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 
 }
