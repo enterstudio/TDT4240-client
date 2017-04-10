@@ -53,13 +53,13 @@ public class GuessFragment extends Fragment {
         public void onResponse(JSONObject response) {
             if (isAdded()) {
                 try {
-
+                    System.out.println("drawingListener: ");
+                    System.out.println(response.toString(2));
                     // Start countdown when drawing is received
                     countDownTimer.start();
 
                     JSONObject image = response.getJSONObject("image");
                     String encodedImage = image.getString("file");
-
                     byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
                     Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
@@ -188,7 +188,7 @@ public class GuessFragment extends Fragment {
         });
 
 
-        countDownTimer = new CountDownTimer(1000, 1000) {
+        countDownTimer = new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timeLeftTextView.setText(getString(R.string.seconds_left) + getString(R.string.semicolon) + " " + millisUntilFinished / 1000);
             }

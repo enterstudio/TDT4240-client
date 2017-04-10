@@ -149,7 +149,7 @@ public class DrawFragment extends Fragment {
             }
         });
 
-        countDownTimer = new CountDownTimer(1000, 1000) {
+        countDownTimer = new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timeLeftTextView.setText(getString(R.string.seconds_left) + getString(R.string.semicolon) + " " + millisUntilFinished / 1000);
             }
@@ -180,7 +180,6 @@ public class DrawFragment extends Fragment {
     }
 
     private void pollForGame(){
-        System.out.println("Polling for game...");
         gamePollingTimer = new Timer();
         gamePollingTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
