@@ -144,7 +144,7 @@ public class GuessFragment extends Fragment {
         submitButton = (Button) rootView.findViewById(R.id.submitButton);
         guess = (EditText) rootView.findViewById(R.id.guessWord);
         guess.setVisibility(View.VISIBLE);
-        submitButton.setVisibility(View.VISIBLE);
+        //submitButton.setVisibility(View.VISIBLE);
 
         imageView.setVisibility(View.VISIBLE);
         guess.setInputType(InputType.TYPE_CLASS_TEXT);
