@@ -70,19 +70,6 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
         exitButton.setOnClickListener(this);
         exitButton.setVisibility(View.VISIBLE);
 
-        playAnotherRoundButton = (Button) rootView.findViewById(R.id.playAnotherRoundButton);
-        playAnotherRoundButton.setClickable(false);
-        playAnotherRoundButton.setEnabled(false);
-
-        if (myPlayerId.equals("0")) {
-            playAnotherRoundButton.setAlpha(0.3f);
-            playAnotherRoundButton.setOnClickListener(this);
-            playAnotherRoundButton.setVisibility(View.VISIBLE);
-        }
-        else {
-            playAnotherRoundButton.setVisibility(View.INVISIBLE);
-        }
-
         /**
          * Did not implement functionality to start a new game round
          * yet, thus no need to display round number
