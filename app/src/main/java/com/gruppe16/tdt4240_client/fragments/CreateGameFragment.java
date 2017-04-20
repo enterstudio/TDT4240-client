@@ -35,14 +35,8 @@ public class CreateGameFragment extends Fragment {
         @Override
         public void onResponse(JSONObject response) {
             if(isAdded()) {
-                try {
-                    if (response.getBoolean("isStarted")) {
-                        GameState.getInstance().setNumberOfPlayers(players.length());
-                        onGoToView.goToDrawView();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                GameState.getInstance().setNumberOfPlayers(players.length());
+                onGoToView.goToDrawView();
             }
         }
     };
@@ -136,7 +130,7 @@ public class CreateGameFragment extends Fragment {
         playerPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForGame(pollForGameListener);
+                NetworkAbstraction.getInstance(getContext()).getGame(pollForGameListener);
             }
         }, 0, 1000);
     }
