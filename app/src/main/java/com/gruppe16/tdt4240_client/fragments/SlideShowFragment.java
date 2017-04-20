@@ -163,7 +163,7 @@ public class SlideShowFragment extends Fragment {
         currentGuessIndex = 0;
 
         // poll for updated game information
-        NetworkAbstraction.getInstance(getContext()).pollForGame(gameListener);
+        NetworkAbstraction.getInstance(getContext()).getGame(gameListener);
 
         return rootView;
 
@@ -188,9 +188,9 @@ public class SlideShowFragment extends Fragment {
                         scores.put(guesserId, scores.get(guesserId) + 1 );
 
                         if (currentGuessIndex + 1 >= guessBlockLength) {
-                            onGoToView.goToScoreboardView();
                             GameState.getInstance().setScores(scores);
                             NetworkAbstraction.getInstance(getActivity()).submitScore(submitListener);
+                            onGoToView.goToScoreboardView();
                         }
                         else {
                             // increment the current guess index
@@ -224,9 +224,9 @@ public class SlideShowFragment extends Fragment {
                     try {
 
                         if (currentGuessIndex + 1 >= guessBlockLength){
-                            onGoToView.goToScoreboardView();
                             GameState.getInstance().setScores(scores);
                             NetworkAbstraction.getInstance(getActivity()).submitScore(submitListener);
+                            onGoToView.goToScoreboardView();
                         }
                         else {
                             // increment the current guess index
