@@ -9,3 +9,7 @@
 /captures
 .externalNativeBuild
 .idea/
+
+npm-debug\.log
+
+volley/
