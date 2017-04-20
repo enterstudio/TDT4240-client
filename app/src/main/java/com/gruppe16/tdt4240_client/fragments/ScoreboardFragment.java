@@ -28,14 +28,11 @@ import java.util.TimerTask;
 
 public class ScoreboardFragment extends Fragment implements Response.Listener<JSONObject>, View.OnClickListener {
 
-    private TextView roundNumberTextView;
-    private Button playAnotherRoundButton;
     private Button exitButton;
     private TableLayout tableLayout;
     private OnGoToView onGoToView;
-    private JSONArray scoreArray;
-    private JSONArray oldScoreArray;
-    private Timer gameStartPollTimer;
+    private Timer gameScoreReceivedPollTimer;
+    private JSONArray scores;
 
     // Required empty public constructor
     public ScoreboardFragment() {}
@@ -54,13 +51,10 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_scoreboard, container, false);
 
-        roundNumberTextView = (TextView) rootView.findViewById(R.id.roundNumberTextView);
         TextView playerNumberTextView = (TextView) rootView.findViewById(R.id.playerNumberTextView);
         tableLayout = (TableLayout) rootView.findViewById(R.id.scoreboard);
 
-
         String myPlayerId = GameState.getInstance().getMyPlayerId();
-
         playerNumberTextView.setText(getString(R.string.player) + " " + myPlayerId);
 
         exitButton = (Button) rootView.findViewById(R.id.exitButton);
@@ -70,21 +64,19 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
         exitButton.setOnClickListener(this);
         exitButton.setVisibility(View.VISIBLE);
 
-        oldScoreArray = new JSONArray();
-
-        setPollingForGameStart();
+        setPollingForGameFinished();
 
         return rootView;
     }
 
 
-    private void setPollingForGameStart(){
-        gameStartPollTimer = new Timer();
+    private void setPollingForGameFinished(){
+        gameScoreReceivedPollTimer = new Timer();
         final Response.Listener<JSONObject> listener = this;
-        gameStartPollTimer.scheduleAtFixedRate( new TimerTask() {
+        gameScoreReceivedPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForGame(listener);
+                NetworkAbstraction.getInstance(getContext()).getGame(listener);
             }
         }, 0, 1000);
     }
@@ -98,47 +90,48 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
             //roundNumberTextView.setText(getString(R.string.round) + " " + round);
 
             boolean isFinished = response.getBoolean("isFinished");
-
-            scoreArray = response.getJSONArray("scores");
-
-            // No need to build the tables if no changes happened
-            if (!(scoreArray.equals(oldScoreArray))){
-                oldScoreArray = scoreArray;
-                tableLayout.removeAllViews();
-                for (int i = 0; i < scoreArray.length(); i++){
-                    int score = scoreArray.optInt(i);
-                    TableRow row = new TableRow(getActivity());
-                    TableRow.LayoutParams lp = new TableRow.LayoutParams(
-                            0, TableRow.LayoutParams.WRAP_CONTENT, 1f
-                    );
-                    row.setLayoutParams(lp);
-
-                    TextView playerView = new TextView(getActivity());
-                    playerView.setText(getString(R.string.player) + " " + i);
-                    playerView.setTextColor(Color.BLACK);
-                    playerView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                    playerView.setTextSize(25);
-                    playerView.setBackgroundColor(Color.WHITE);
-                    playerView.setGravity(Gravity.START);
-                    playerView.setPadding(3,3,3,0);
-                    row.addView(playerView);
-
-                    TextView scoreView = new TextView(getActivity());
-                    scoreView.setText(score + " " + getString(R.string.pt));
-                    scoreView.setTextColor(Color.BLACK);
-                    scoreView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                    scoreView.setTextSize(25);
-                    scoreView.setBackgroundColor(Color.WHITE);
-                    scoreView.setGravity(Gravity.END);
-                    scoreView.setPadding(3,3,3,0);
-                    row.addView(scoreView);
-
-                    tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
-                }
-
+            if(!isFinished){
+                return;
             }
 
-            gameStartPollTimer.cancel();
+            gameScoreReceivedPollTimer.cancel();
+
+            scores = response.getJSONArray("scores");
+
+            // No need to build the tables if no changes happened
+            tableLayout.removeAllViews();
+            for (int i = 0; i < scores.length(); i++){
+                int score = scores.optInt(i);
+                TableRow row = new TableRow(getActivity());
+                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
+                        0, TableRow.LayoutParams.WRAP_CONTENT, 1f
+                );
+                row.setLayoutParams(layoutParams);
+
+                TextView playerView = new TextView(getActivity());
+                playerView.setText(getString(R.string.player) + " " + i);
+                playerView.setTextColor(Color.BLACK);
+                playerView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                playerView.setTextSize(25);
+                playerView.setBackgroundColor(Color.WHITE);
+                playerView.setGravity(Gravity.START);
+                playerView.setPadding(3,3,3,0);
+                row.addView(playerView);
+
+                TextView scoreView = new TextView(getActivity());
+                scoreView.setText(score + " " + getString(R.string.pt));
+                scoreView.setTextColor(Color.BLACK);
+                scoreView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                scoreView.setTextSize(25);
+                scoreView.setBackgroundColor(Color.WHITE);
+                scoreView.setGravity(Gravity.END);
+                scoreView.setPadding(3,3,3,0);
+                row.addView(scoreView);
+
+                tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+            }
+
+
             GameState.getInstance().setWinners(findIndexOfWinners());
             exitButton.setClickable(true);
             exitButton.setAlpha(1f);
@@ -151,12 +144,10 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
     }
 
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.exitButton:
-                System.out.println("GoToExitView");
                 onGoToView.goToExitView();
                 break;
         }
@@ -165,16 +156,16 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
     private ArrayList<Integer> findIndexOfWinners(){
 
         int largestNumber = -1;
-        for (int i = 0; i < scoreArray.length(); i++){
-            if (scoreArray.optInt(i) > largestNumber){
-                largestNumber = scoreArray.optInt(i);
+        for (int i = 0; i < scores.length(); i++){
+            if (scores.optInt(i) > largestNumber){
+                largestNumber = scores.optInt(i);
             }
         }
 
         ArrayList<Integer> indexOfWinners = new ArrayList<>();
-        for (int i = 0; i < scoreArray.length(); i++){
+        for (int i = 0; i < scores.length(); i++){
             try {
-                int number = scoreArray.getInt(i);
+                int number = scores.getInt(i);
                 if (number == largestNumber){
                     indexOfWinners.add(i);
                 }
