@@ -68,7 +68,7 @@ public class NetworkAbstraction {
         requestQueue.add(request);
     }
 
-    public void pollForGame(Response.Listener<JSONObject> listener){
+    public void getGame(Response.Listener<JSONObject> listener){
         String url = gameUrl + "/" + GameState.getInstance().getGamePin();
         Request<JSONObject> request = new JsonObjectRequest(GET, url, null, listener, errorListener);
         requestQueue.add(request);
