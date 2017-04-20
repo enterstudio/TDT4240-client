@@ -66,7 +66,7 @@ public class WaitingFragment extends Fragment {
         gameStartPollTimer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForGame(pollForGameListener);
+                NetworkAbstraction.getInstance(getContext()).getGame(pollForGameListener);
             }
         }, 0, 1000);
     }

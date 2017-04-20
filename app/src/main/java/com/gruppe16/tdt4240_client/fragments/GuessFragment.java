@@ -208,7 +208,7 @@ public class GuessFragment extends Fragment {
         GamePollingTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForGame(gameListener);
+                NetworkAbstraction.getInstance(getContext()).getGame(gameListener);
             }
         }, 0, 1000);
     }

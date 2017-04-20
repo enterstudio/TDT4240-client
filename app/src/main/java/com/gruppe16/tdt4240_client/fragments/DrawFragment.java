@@ -184,7 +184,7 @@ public class DrawFragment extends Fragment {
         gamePollingTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                NetworkAbstraction.getInstance(getContext()).pollForGame(gamePollListener);
+                NetworkAbstraction.getInstance(getContext()).getGame(gamePollListener);
             }
         }, 0, 1000);
     }
