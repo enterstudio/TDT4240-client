@@ -70,13 +70,6 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
         exitButton.setOnClickListener(this);
         exitButton.setVisibility(View.VISIBLE);
 
-        /**
-         * Did not implement functionality to start a new game round
-         * yet, thus no need to display round number
-         */
-        //roundNumberTextView.setText(getString(R.string.round));
-
-
         oldScoreArray = new JSONArray();
 
         setPollingForGameStart();
@@ -145,25 +138,12 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
 
             }
 
-            // For the admin
-            if (isFinished && GameState.getInstance().getMyPlayerId().equals("0")){
-                gameStartPollTimer.cancel();
-                GameState.getInstance().setWinners(findIndexOfWinners());
-                exitButton.setClickable(true);
-                exitButton.setAlpha(1f);
-                exitButton.setEnabled(true);
-                playAnotherRoundButton.setClickable(true);
-                playAnotherRoundButton.setAlpha(1f);
-                playAnotherRoundButton.setEnabled(true);
-            }
-            // For the regular players
-            else if (isFinished){
-                gameStartPollTimer.cancel();
-                GameState.getInstance().setWinners(findIndexOfWinners());
-                exitButton.setClickable(true);
-                exitButton.setEnabled(true);
-                exitButton.setAlpha(1f);
-            }
+            gameStartPollTimer.cancel();
+            GameState.getInstance().setWinners(findIndexOfWinners());
+            exitButton.setClickable(true);
+            exitButton.setAlpha(1f);
+            exitButton.setEnabled(true);
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -178,11 +158,6 @@ public class ScoreboardFragment extends Fragment implements Response.Listener<JS
             case R.id.exitButton:
                 System.out.println("GoToExitView");
                 onGoToView.goToExitView();
-                break;
-            case R.id.playAnotherRoundButton:
-                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                alertDialog.setMessage("To be developed...");
-                alertDialog.show();
                 break;
         }
     }
