@@ -37,7 +37,7 @@ public class FinishedFragment extends Fragment {
             try{
                 int round = (Integer) response.get("round");
                 int numberOfPlayers = GameState.getInstance().getNumberOfPlayers();
-                if(round == (numberOfPlayers * 2) - 1 ){
+                if(round == numberOfPlayers ){
                     startSlideshowButton.setClickable(true);
                     startSlideshowButton.setAlpha(1f);
                     pollTimer.cancel();
@@ -86,6 +86,7 @@ public class FinishedFragment extends Fragment {
                 onGoToView.goToSlideShowView();
             }
         });
+        pollForAllDataReceived();
         return rootView;
     }
 
