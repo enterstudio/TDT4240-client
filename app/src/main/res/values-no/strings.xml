@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TDT4240-client</string>
+    <string name="drew">tegnet</string>
+    <string name="guessed">gjettet</string>
+    <string name="hello_blank_fragment">God dag du blanke fragment</string>
+    <string name="initialWord">Første ord</string>
+    <string name="main_menu">Hovedmeny</string>
+    <string name="no_answer">Har ikke svart</string>
+    <string name="player">Spiller</string>
+    <string name="players">Spillere</string>
+    <string name="players_connected">Tilkoblede spillere:</string>
+    <string name="pt">poeng</string>
+    <string name="round">Runde</string>
+    <string name="score">Resultater</string>
+    <string name="seconds_left">Sekunder igjen</string>
+    <string name="semicolon">;</string>
+    <string name="won_the_game">vant!</string>
+    <string name="wait_for_players">Venter på spillere...</string>
+    <string name="start">Start</string>
+    <string name="join_new_game">Bli med å spille</string>
+    <string name="create_new_game">Opprett nytt spill</string>
+    <string name="enter_game_pin">Skriv in spillpin</string>
+    <string name="write_here">skriv her...</string>
+    <string name="join_game">Bli med!</string>
+    <string name="guess_word">Gjett et ord...</string>
+    <string name="submit">Ferdig</string>
+    <string name="start_slideshow">Begynn gjennomgang</string>
+    <string name="finished">FERDIG!</string>
+    <string name="exit">Avslutt</string>
+    <string name="declined">Avslått</string>
+    <string name="approved">Godkjent</string>
+</resources>

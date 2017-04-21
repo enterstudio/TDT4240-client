@@ -95,7 +95,7 @@
                 android:layout_gravity="bottom|right"
                 android:layout_weight="1"
                 android:clickable="false"
-                android:text="Exit" />
+                android:text="@string/exit" />
 
         </LinearLayout>
 

@@ -97,7 +97,7 @@
                 android:layout_height="80dp"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
-                android:text="Declined" />
+                android:text="@string/declined" />
 
             <Button
                 android:id="@+id/okButton"
@@ -105,7 +105,7 @@
                 android:layout_height="80dp"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
-                android:text="OK" />
+                android:text="@string/approved" />
 
         </LinearLayout>
 
