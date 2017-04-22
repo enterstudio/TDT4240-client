@@ -36,7 +36,7 @@
                 android:layout_gravity="center"
                 android:ems="10"
                 android:fontFamily="casual"
-                android:hint="guess word..."
+                android:hint="@string/guess_word"
                 android:textAlignment="center"
                 android:textColor="@color/textEditColor"
                 android:textSize="30dp"
@@ -92,7 +92,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/button_bg"
-                android:text="Submit"
+                android:text="@string/submit"
                 android:visibility="gone" />
 
         </LinearLayout>

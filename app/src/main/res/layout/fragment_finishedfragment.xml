@@ -15,7 +15,7 @@
             android:layout_width="301dp"
             android:layout_height="76dp"
             android:layout_gravity="center"
-            android:text="FINISHED"
+            android:text="@string/finished"
             android:textAlignment="center"
             android:textSize="60dp" />
 
@@ -23,7 +23,7 @@
             android:layout_width="220dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
-            android:text="Start slideshow"
+            android:text="@string/start_slideshow"
             android:id="@+id/startSlideshowButton" />
 
     </LinearLayout>

@@ -8,7 +8,7 @@
     <string name="score">Score</string>
     <string name="pt">pt</string>
     <string name="round">Round</string>
-    <string name="pin">PIN:</string>
+    <string name="pin" translatable="false">PIN:</string>
     <string name="players_connected">Players connected:</string>
     <string name="seconds_left">Seconds left</string>
     <string name="semicolon">:</string>
@@ -18,5 +18,19 @@
     <string name="no_answer">No answer</string>
     <string name="won_the_game">won the game!</string>
     <string name="main_menu">main menu</string>
+    <string name="wait_for_players">Waiting for players...</string>
+    <string name="start">Start</string>
+    <string name="create_new_game">Create new game</string>
+    <string name="join_new_game">Join new game</string>
+    <string name="enter_game_pin">Enter game pin:</string>
+    <string name="write_here">write here...</string>
+    <string name="join_game">Join game</string>
+    <string name="guess_word">Guess word...</string>
+    <string name="submit">Submit</string>
+    <string name="start_slideshow">Start slideshow</string>
+    <string name="finished">FINISHED</string>
+    <string name="exit">EXIT</string>
+    <string name="declined">Declined</string>
+    <string name="approved">OK</string>
 
 </resources>

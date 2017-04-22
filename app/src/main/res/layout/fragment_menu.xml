@@ -21,7 +21,7 @@
             android:layout_width="220dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
-            android:text="Create new game"
+            android:text="@string/create_new_game"
             android:id="@+id/createGameButton"
             android:layout_margin="10dp"
             />
@@ -29,7 +29,7 @@
         <Button
             android:layout_width="220dp"
             android:layout_gravity="center"
-            android:text="Join new game"
+            android:text="@string/join_new_game"
             android:layout_height="80dp"
             android:id="@+id/joinGameButton"
             android:layout_margin="10dp"
