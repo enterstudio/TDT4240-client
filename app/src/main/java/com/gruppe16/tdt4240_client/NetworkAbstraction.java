@@ -1,5 +1,7 @@
 package com.gruppe16.tdt4240_client;
 import android.content.Context;
+import android.util.Log;
+
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -21,6 +23,7 @@ import java.util.Map;
 
 public class NetworkAbstraction {
 
+    private static String TAG = "NetworkAbstraction";
     private final static int POST = Request.Method.POST;
     private final static int GET = Request.Method.GET;
     private static NetworkAbstraction networkAbstraction;
@@ -30,6 +33,7 @@ public class NetworkAbstraction {
     private String guessUrl = url + "/guess";
     private String drawingUrl = url + "/drawing";
     private String scoreUrl = url + "/score";
+    private String playerUrl = url + "/player";
     private RequestQueue requestQueue;
     private NetworkErrorHandler errorListener = new NetworkErrorHandler();
 
@@ -57,9 +61,15 @@ public class NetworkAbstraction {
     }
 
     public void joinGame(Response.Listener<JSONObject> listener){
-        String joinGameUrl = gameUrl + "/" + GameState.getInstance().getGamePin() + "/join";
-        Request<JSONObject> request = new JsonObjectRequest(POST, joinGameUrl, null, listener, errorListener);
-        requestQueue.add(request);
+        JSONObject body = new JSONObject();
+        try{
+            body.put("gamePin", GameState.getInstance().getGamePin());
+            Request<JSONObject> request = new JsonObjectRequest(POST, playerUrl, body, listener, errorListener);
+            requestQueue.add(request);
+        }
+        catch (JSONException e){
+            Log.w(TAG, e);
+        }
     }
 
 
